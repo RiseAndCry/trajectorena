@@ -13,8 +13,24 @@ const ARENA_WALL_THICKNESS: f32 = 5.0;
 
 const SPELL_VELOCITY: f32 = 400.0;
 
+const PLAYER_SPEED: f32 = 5.0;
+const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
+    (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
+
 struct Spell {
     velocity: Vec3,
+}
+
+struct Player {
+    speed: f32
+}
+
+impl Player {
+    fn new() -> Self {
+        Player {
+            speed: PLAYER_SPEED,
+        }
+    }
 }
 
 #[derive(PartialEq)]
@@ -41,6 +57,7 @@ fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) 
 
     spawn_arena_bounds(commands, &mut materials);
     spawn_spell(commands, &mut materials);
+    spawn_player(commands, &mut materials);
 
     commands
         .spawn(Camera2dBundle::default());
@@ -99,6 +116,18 @@ fn spawn_spell(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMater
         .with(Spell {
             velocity: SPELL_VELOCITY * Vec3::new(0.5, 0.5, 0.0).normalize(),
         });
+}
+
+fn spawn_player(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
+    let player_material = materials.add(Color::YELLOW.into());
+
+    commands.spawn(SpriteBundle {
+        material: player_material.clone(),
+        transform: Transform::from_translation(Vec3::from(PLAYER_STARTING_TRANSLATION)),
+        sprite: Sprite::new(Vec2::new(16.0, 16.0)),
+        ..Default::default()
+    })
+    .with(Player::new());
 }
 
 fn spell_movement_system(time: Res<Time>, mut spell_query: Query<(&Spell, &mut Transform)>) {
