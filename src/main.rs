@@ -8,6 +8,9 @@ use bevy::{
 // todo handle resizing, different resolutions
 const SCREEN_WIDTH: f32 = 1280.0;
 const SCREEN_HEIGHT: f32 = 720.0;
+
+const ARENA_WALL_THICKNESS: f32 = 5.0;
+
 const SPELL_VELOCITY: f32 = 400.0;
 
 struct Spell {
@@ -46,14 +49,13 @@ fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) 
 
 fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
     let wall_material = materials.add(Color::rgb(0.8, 0.8, 0.8).into());
-    let wall_thickness = 5.0;
     let bounds = Vec2::new(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT);
 
     // top
     commands.spawn(SpriteBundle {
         material: wall_material.clone(),
         transform: Transform::from_translation(Vec3::new(0.0, bounds.y / 2.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(bounds.x + wall_thickness, wall_thickness)),
+        sprite: Sprite::new(Vec2::new(bounds.x + ARENA_WALL_THICKNESS, ARENA_WALL_THICKNESS)),
         ..Default::default()
     })
     .with(Collider::Solid);
@@ -62,7 +64,7 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
     commands.spawn(SpriteBundle {
         material: wall_material.clone(),
         transform: Transform::from_translation(Vec3::new(bounds.x / 2.0, 0.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(wall_thickness, bounds.y + wall_thickness)),
+        sprite: Sprite::new(Vec2::new(ARENA_WALL_THICKNESS, bounds.y + ARENA_WALL_THICKNESS)),
         ..Default::default()
     })
     .with(Collider::Solid);
@@ -71,7 +73,7 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
     commands.spawn(SpriteBundle {
         material: wall_material.clone(),
         transform: Transform::from_translation(Vec3::new(0.0, -bounds.y / 2.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(bounds.x + wall_thickness, wall_thickness)),
+        sprite: Sprite::new(Vec2::new(bounds.x + ARENA_WALL_THICKNESS, ARENA_WALL_THICKNESS)),
         ..Default::default()
     })
     .with(Collider::Solid);
@@ -80,14 +82,13 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
     commands.spawn(SpriteBundle {
         material: wall_material.clone(),
         transform: Transform::from_translation(Vec3::new(-bounds.x / 2.0, 0.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(wall_thickness, bounds.y + wall_thickness)),
+        sprite: Sprite::new(Vec2::new(ARENA_WALL_THICKNESS, bounds.y + ARENA_WALL_THICKNESS)),
         ..Default::default()
     })
     .with(Collider::Solid);
 }
 
 fn spawn_spell(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
-
     commands
         .spawn(SpriteBundle {
             material: materials.add(Color::rgb(1.0, 0.5, 0.5).into()),
