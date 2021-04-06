@@ -13,7 +13,7 @@ const ARENA_WALL_THICKNESS: f32 = 5.0;
 
 const SPELL_VELOCITY: f32 = 400.0;
 
-const PLAYER_SPEED: f32 = 5.0;
+const PLAYER_SPEED: f32 = 300.0;
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
     (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
 
@@ -50,6 +50,7 @@ fn main() {
         .add_startup_system(setup.system())
         .add_system(spell_movement_system.system())
         .add_system(spell_collision_system.system())
+        .add_system(player_movement_system.system())
         .run();
 }
 
@@ -128,6 +129,32 @@ fn spawn_player(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMate
         ..Default::default()
     })
     .with(Player::new());
+}
+
+fn player_movement_system(
+    time: Res<Time>,
+    keyboard_input: Res<Input<KeyCode>>,
+    mut query: Query<(&Player, &mut Transform)>,
+) {
+    for (player, mut transform) in query.iter_mut() {
+        let mut movement = Vec2::new(0.0, 0.0);
+        if keyboard_input.pressed(KeyCode::Left) {
+            movement.x -= 1.0;
+        }
+        if keyboard_input.pressed(KeyCode::Right) {
+            movement.x += 1.0;
+        }
+        if keyboard_input.pressed(KeyCode::Up) {
+            movement.y += 1.0;
+        }
+        if keyboard_input.pressed(KeyCode::Down) {
+            movement.y -= 1.0;
+        }
+
+        let translation = &mut transform.translation;
+        translation.x += time.delta_seconds() * movement.x * player.speed;
+        translation.y += time.delta_seconds() * movement.y * player.speed;
+    }
 }
 
 fn spell_movement_system(time: Res<Time>, mut spell_query: Query<(&Spell, &mut Transform)>) {
