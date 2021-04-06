@@ -9,10 +9,12 @@ use bevy::{
 const SCREEN_WIDTH: f32 = 1280.0;
 const SCREEN_HEIGHT: f32 = 720.0;
 
+const ARENA_SIZE: (f32, f32) = (SCREEN_WIDTH / 2.0, SCREEN_HEIGHT);
 const ARENA_WALL_THICKNESS: f32 = 5.0;
 
 const SPELL_VELOCITY: f32 = 400.0;
 
+const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
 const PLAYER_SPEED: f32 = 300.0;
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
     (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
@@ -22,7 +24,7 @@ struct Spell {
 }
 
 struct Player {
-    speed: f32
+    speed: f32,
 }
 
 impl Player {
@@ -55,55 +57,68 @@ fn main() {
 }
 
 fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
-
     spawn_arena_bounds(commands, &mut materials);
     spawn_spell(commands, &mut materials);
     spawn_player(commands, &mut materials);
 
-    commands
-        .spawn(Camera2dBundle::default());
-
+    commands.spawn(Camera2dBundle::default());
 }
 
 fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
     let wall_material = materials.add(Color::rgb(0.8, 0.8, 0.8).into());
-    let bounds = Vec2::new(SCREEN_WIDTH / 2.0, SCREEN_HEIGHT);
+    let arena = Vec2::from(ARENA_SIZE);
 
     // top
-    commands.spawn(SpriteBundle {
-        material: wall_material.clone(),
-        transform: Transform::from_translation(Vec3::new(0.0, bounds.y / 2.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(bounds.x + ARENA_WALL_THICKNESS, ARENA_WALL_THICKNESS)),
-        ..Default::default()
-    })
-    .with(Collider::Solid);
+    commands
+        .spawn(SpriteBundle {
+            material: wall_material.clone(),
+            transform: Transform::from_translation(Vec3::new(0.0, arena.y / 2.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(
+                arena.x + ARENA_WALL_THICKNESS,
+                ARENA_WALL_THICKNESS,
+            )),
+            ..Default::default()
+        })
+        .with(Collider::Solid);
 
     // right
-    commands.spawn(SpriteBundle {
-        material: wall_material.clone(),
-        transform: Transform::from_translation(Vec3::new(bounds.x / 2.0, 0.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(ARENA_WALL_THICKNESS, bounds.y + ARENA_WALL_THICKNESS)),
-        ..Default::default()
-    })
-    .with(Collider::Solid);
+    commands
+        .spawn(SpriteBundle {
+            material: wall_material.clone(),
+            transform: Transform::from_translation(Vec3::new(arena.x / 2.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(
+                ARENA_WALL_THICKNESS,
+                arena.y + ARENA_WALL_THICKNESS,
+            )),
+            ..Default::default()
+        })
+        .with(Collider::Solid);
 
     // bottom
-    commands.spawn(SpriteBundle {
-        material: wall_material.clone(),
-        transform: Transform::from_translation(Vec3::new(0.0, -bounds.y / 2.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(bounds.x + ARENA_WALL_THICKNESS, ARENA_WALL_THICKNESS)),
-        ..Default::default()
-    })
-    .with(Collider::Solid);
+    commands
+        .spawn(SpriteBundle {
+            material: wall_material.clone(),
+            transform: Transform::from_translation(Vec3::new(0.0, -arena.y / 2.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(
+                arena.x + ARENA_WALL_THICKNESS,
+                ARENA_WALL_THICKNESS,
+            )),
+            ..Default::default()
+        })
+        .with(Collider::Solid);
 
     // left
-    commands.spawn(SpriteBundle {
-        material: wall_material.clone(),
-        transform: Transform::from_translation(Vec3::new(-bounds.x / 2.0, 0.0, 0.0)),
-        sprite: Sprite::new(Vec2::new(ARENA_WALL_THICKNESS, bounds.y + ARENA_WALL_THICKNESS)),
-        ..Default::default()
-    })
-    .with(Collider::Solid);
+    commands
+        .spawn(SpriteBundle {
+            material: wall_material.clone(),
+            transform: Transform::from_translation(Vec3::new(-arena.x / 2.0, 0.0, 0.0)),
+            sprite: Sprite::new(Vec2::new(
+                ARENA_WALL_THICKNESS,
+                arena.y + ARENA_WALL_THICKNESS,
+            )),
+            ..Default::default()
+        })
+        .with(Collider::Solid);
 }
 
 fn spawn_spell(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
@@ -122,13 +137,14 @@ fn spawn_spell(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMater
 fn spawn_player(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
     let player_material = materials.add(Color::YELLOW.into());
 
-    commands.spawn(SpriteBundle {
-        material: player_material.clone(),
-        transform: Transform::from_translation(Vec3::from(PLAYER_STARTING_TRANSLATION)),
-        sprite: Sprite::new(Vec2::new(16.0, 16.0)),
-        ..Default::default()
-    })
-    .with(Player::new());
+    commands
+        .spawn(SpriteBundle {
+            material: player_material.clone(),
+            transform: Transform::from_translation(Vec3::from(PLAYER_STARTING_TRANSLATION)),
+            sprite: Sprite::new(Vec2::from(PLAYER_SIZE)),
+            ..Default::default()
+        })
+        .with(Player::new());
 }
 
 fn player_movement_system(
@@ -137,6 +153,7 @@ fn player_movement_system(
     mut query: Query<(&Player, &mut Transform)>,
 ) {
     for (player, mut transform) in query.iter_mut() {
+        let arena_size = Vec2::from(ARENA_SIZE);
         let mut movement = Vec2::new(0.0, 0.0);
         if keyboard_input.pressed(KeyCode::Left) {
             movement.x -= 1.0;
@@ -154,6 +171,19 @@ fn player_movement_system(
         let translation = &mut transform.translation;
         translation.x += time.delta_seconds() * movement.x * player.speed;
         translation.y += time.delta_seconds() * movement.y * player.speed;
+
+        // bound the player within the walls
+        let player_one_side_size = Vec2::from(PLAYER_SIZE).x / 2.0;
+
+        translation.x = translation
+            .x
+            .min(arena_size.x / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
+            .max(-arena_size.x / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
+
+        translation.y = translation
+            .y
+            .min(arena_size.y / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
+            .max(-arena_size.y / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
     }
 }
 
