@@ -12,6 +12,7 @@ const SCREEN_HEIGHT: f32 = 720.0;
 const ARENA_SIZE: (f32, f32) = (SCREEN_WIDTH / 2.0, SCREEN_HEIGHT);
 const ARENA_WALL_THICKNESS: f32 = 5.0;
 
+const SPELL_COOLDOWN: f32 = 0.5;
 const SPELL_VELOCITY: f32 = 400.0;
 
 const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
@@ -35,11 +36,24 @@ impl Player {
     }
 }
 
+struct SpellCooldown {
+    timer: Timer,
+}
+
+impl SpellCooldown {
+    fn new() -> Self {
+        SpellCooldown {
+            timer: Timer::from_seconds(SPELL_COOLDOWN, false),
+        }
+    }
+}
+
 #[derive(PartialEq)]
 enum Collider {
     Solid,
 }
 
+// todo separate code into modules
 fn main() {
     App::build()
         .add_resource(WindowDescriptor {
@@ -48,17 +62,18 @@ fn main() {
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
+        .add_resource(SpellCooldown::new())
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_system(spell_movement_system.system())
         .add_system(spell_collision_system.system())
         .add_system(player_movement_system.system())
+        .add_system(player_shooting_system.system())
         .run();
 }
 
 fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     spawn_arena_bounds(commands, &mut materials);
-    spawn_spell(commands, &mut materials);
     spawn_player(commands, &mut materials);
 
     commands.spawn(Camera2dBundle::default());
@@ -121,10 +136,9 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
         .with(Collider::Solid);
 }
 
-fn spawn_spell(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
+fn spawn_spell(commands: &mut Commands) {
     commands
         .spawn(SpriteBundle {
-            material: materials.add(Color::rgb(1.0, 0.5, 0.5).into()),
             transform: Transform::from_translation(Vec3::new(0.0, -200.0, 1.0)),
             sprite: Sprite::new(Vec2::new(20.0, 20.0)),
             ..Default::default()
@@ -185,6 +199,24 @@ fn player_movement_system(
             .min(arena_size.y / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
             .max(-arena_size.y / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
     }
+}
+
+fn player_shooting_system(
+    time: Res<Time>,
+    commands: &mut Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    mut spell_cooldown: ResMut<SpellCooldown>,
+) {
+    spell_cooldown.timer.tick(time.delta_seconds());
+    if !keyboard_input.pressed(KeyCode::Space) {
+        return;
+    }
+    if !spell_cooldown.timer.finished() {
+        return;
+    }
+
+    spawn_spell(commands);
+    spell_cooldown.timer.reset();
 }
 
 fn spell_movement_system(time: Res<Time>, mut spell_query: Query<(&Spell, &mut Transform)>) {
