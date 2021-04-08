@@ -56,13 +56,13 @@ enum Collider {
 // todo separate code into modules
 fn main() {
     App::build()
-        .add_resource(WindowDescriptor {
+        .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
-        .add_resource(SpellCooldown::new())
+        .insert_resource(SpellCooldown::new())
         .add_plugins(DefaultPlugins)
         .add_startup_system(setup.system())
         .add_system(spell_movement_system.system())
@@ -72,11 +72,11 @@ fn main() {
         .run();
 }
 
-fn setup(commands: &mut Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
-    spawn_arena_bounds(commands, &mut materials);
-    spawn_player(commands, &mut materials);
+fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+    spawn_arena_bounds(&mut commands, &mut materials);
+    spawn_player(&mut commands, &mut materials);
 
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 }
 
 fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
@@ -85,7 +85,7 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
 
     // top
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, arena.y / 2.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
@@ -94,11 +94,11 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
             )),
             ..Default::default()
         })
-        .with(Collider::Solid);
+        .insert(Collider::Solid);
 
     // right
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(arena.x / 2.0, 0.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
@@ -107,11 +107,11 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
             )),
             ..Default::default()
         })
-        .with(Collider::Solid);
+        .insert(Collider::Solid);
 
     // bottom
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, -arena.y / 2.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
@@ -120,11 +120,11 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
             )),
             ..Default::default()
         })
-        .with(Collider::Solid);
+        .insert(Collider::Solid);
 
     // left
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(-arena.x / 2.0, 0.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
@@ -133,17 +133,17 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
             )),
             ..Default::default()
         })
-        .with(Collider::Solid);
+        .insert(Collider::Solid);
 }
 
-fn spawn_spell(commands: &mut Commands) {
+fn spawn_spell(mut commands: Commands) {
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             transform: Transform::from_translation(Vec3::new(0.0, -200.0, 1.0)),
             sprite: Sprite::new(Vec2::new(20.0, 20.0)),
             ..Default::default()
         })
-        .with(Spell {
+        .insert(Spell {
             velocity: SPELL_VELOCITY * Vec3::new(0.5, 0.5, 0.0).normalize(),
         });
 }
@@ -152,13 +152,13 @@ fn spawn_player(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMate
     let player_material = materials.add(Color::YELLOW.into());
 
     commands
-        .spawn(SpriteBundle {
+        .spawn_bundle(SpriteBundle {
             material: player_material.clone(),
             transform: Transform::from_translation(Vec3::from(PLAYER_STARTING_TRANSLATION)),
             sprite: Sprite::new(Vec2::from(PLAYER_SIZE)),
             ..Default::default()
         })
-        .with(Player::new());
+        .insert(Player::new());
 }
 
 fn player_movement_system(
@@ -201,13 +201,14 @@ fn player_movement_system(
     }
 }
 
+// todo shoot in certain direction
 fn player_shooting_system(
     time: Res<Time>,
-    commands: &mut Commands,
+    commands: Commands,
     keyboard_input: Res<Input<KeyCode>>,
     mut spell_cooldown: ResMut<SpellCooldown>,
 ) {
-    spell_cooldown.timer.tick(time.delta_seconds());
+    spell_cooldown.timer.tick(time.delta());
     if !keyboard_input.pressed(KeyCode::Space) {
         return;
     }
