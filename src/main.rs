@@ -14,6 +14,7 @@ const ARENA_WALL_THICKNESS: f32 = 5.0;
 
 const SPELL_COOLDOWN: f32 = 0.5;
 const SPELL_VELOCITY: f32 = 400.0;
+const SPELL_STARTING_POSITION_OFFSET: (f32, f32, f32) = (0.0, 20.0, 0.0);
 
 const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
 const PLAYER_SPEED: f32 = 300.0;
@@ -136,10 +137,14 @@ fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<Col
         .insert(Collider::Solid);
 }
 
-fn spawn_spell(mut commands: Commands) {
+fn spawn_spell(mut commands: Commands, player_transform: &Transform) {
+
+    let mut spell_starting_position = player_transform.translation.clone();
+    spell_starting_position += Vec3::from(SPELL_STARTING_POSITION_OFFSET);
+
     commands
         .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(0.0, -200.0, 1.0)),
+            transform: Transform::from_translation(spell_starting_position),
             sprite: Sprite::new(Vec2::new(20.0, 20.0)),
             ..Default::default()
         })
@@ -207,6 +212,7 @@ fn player_shooting_system(
     commands: Commands,
     keyboard_input: Res<Input<KeyCode>>,
     mut spell_cooldown: ResMut<SpellCooldown>,
+    player_query: Query<(&Player, &Transform)>,
 ) {
     spell_cooldown.timer.tick(time.delta());
     if !keyboard_input.pressed(KeyCode::Space) {
@@ -216,7 +222,10 @@ fn player_shooting_system(
         return;
     }
 
-    spawn_spell(commands);
+    let (_, player_transform) = player_query.single()
+        .expect("Second player is not implemented yet");
+
+    spawn_spell(commands, player_transform);
     spell_cooldown.timer.reset();
 }
 
