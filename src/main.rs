@@ -21,9 +21,6 @@ const PLAYER_SPEED: f32 = 300.0;
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
     (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
 
-struct Spell {
-    velocity: Vec3,
-}
 
 struct Player {
     speed: f32,
@@ -47,6 +44,29 @@ impl SpellCooldown {
             timer: Timer::from_seconds(SPELL_COOLDOWN, false),
         }
     }
+}
+
+struct Spell;
+
+struct Movement {
+    velocity: Vec3,
+}
+
+// todo add default trait
+impl Movement {
+    fn new(velocity: Vec3) -> Self {
+        Movement {
+            velocity
+        }
+    }
+}
+
+#[derive(Bundle)]
+struct SpellBundle {
+    spell: Spell,
+    movement: Movement,
+    #[bundle]
+    sprite: SpriteBundle,
 }
 
 #[derive(PartialEq)]
@@ -142,15 +162,15 @@ fn spawn_spell(mut commands: Commands, player_transform: &Transform) {
     let mut spell_starting_position = player_transform.translation.clone();
     spell_starting_position += Vec3::from(SPELL_STARTING_POSITION_OFFSET);
 
-    commands
-        .spawn_bundle(SpriteBundle {
+    commands.spawn_bundle(SpellBundle {
+        spell: Spell,
+        sprite: SpriteBundle {
             transform: Transform::from_translation(spell_starting_position),
             sprite: Sprite::new(Vec2::new(20.0, 20.0)),
             ..Default::default()
-        })
-        .insert(Spell {
-            velocity: SPELL_VELOCITY * Vec3::new(0.5, 0.5, 0.0).normalize(),
-        });
+        },
+        movement: Movement::new(SPELL_VELOCITY * Vec3::new(0.5, 0.5, 0.0).normalize()),
+    });
 }
 
 fn spawn_player(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
@@ -214,6 +234,7 @@ fn player_shooting_system(
     mut spell_cooldown: ResMut<SpellCooldown>,
     player_query: Query<(&Player, &Transform)>,
 ) {
+    // todo spell_cooldown should be replaced with SpellBundle timer
     spell_cooldown.timer.tick(time.delta());
     if !keyboard_input.pressed(KeyCode::Space) {
         return;
@@ -229,22 +250,24 @@ fn player_shooting_system(
     spell_cooldown.timer.reset();
 }
 
-fn spell_movement_system(time: Res<Time>, mut spell_query: Query<(&Spell, &mut Transform)>) {
+fn spell_movement_system(
+    time: Res<Time>,
+    mut spell_query: Query<(&Spell, &Movement, &mut Transform)>
+) {
     // limit the maximum distance covered to 2 percent of velocity (each tick)
     let delta_seconds = f32::min(0.02, time.delta_seconds());
 
-    for (spell, mut transform) in spell_query.iter_mut() {
-        transform.translation += spell.velocity * delta_seconds;
+    for (_, movement, mut transform) in spell_query.iter_mut() {
+        transform.translation += movement.velocity * delta_seconds;
     }
 }
 
 fn spell_collision_system(
-    mut spell_query: Query<(&mut Spell, &Transform, &Sprite)>,
+    mut spell_query: Query<(&Spell, &Transform, &mut Movement, &Sprite)>,
     collider_query: Query<(Entity, &Collider, &Transform, &Sprite)>,
 ) {
-    for (mut spell, spell_transform, sprite) in spell_query.iter_mut() {
+    for (_, spell_transform, mut spell_movement, sprite) in spell_query.iter_mut() {
         let spell_size = sprite.size;
-        let spell_velocity = &mut spell.velocity;
 
         for (_, collider, transform, sprite) in collider_query.iter() {
             // collision is not detected if the object is moving too fast, so either it has to be
@@ -261,18 +284,18 @@ fn spell_collision_system(
                 let mut reflect_y = false;
 
                 match collision {
-                    Collision::Left => reflect_x = spell_velocity.x > 0.0,
-                    Collision::Right => reflect_x = spell_velocity.x < 0.0,
-                    Collision::Top => reflect_y = spell_velocity.y < 0.0,
-                    Collision::Bottom => reflect_y = spell_velocity.y > 0.0,
+                    Collision::Left => reflect_x = spell_movement.velocity.x > 0.0,
+                    Collision::Right => reflect_x = spell_movement.velocity.x < 0.0,
+                    Collision::Top => reflect_y = spell_movement.velocity.y < 0.0,
+                    Collision::Bottom => reflect_y = spell_movement.velocity.y > 0.0,
                 }
 
                 if reflect_x {
-                    spell_velocity.x = -spell_velocity.x;
+                    spell_movement.velocity.x = -spell_movement.velocity.x;
                 }
 
                 if reflect_y {
-                    spell_velocity.y = -spell_velocity.y;
+                    spell_movement.velocity.y = -spell_movement.velocity.y;
                 }
 
                 // break if this collide is on a solid, otherwise continue check whether a solid is also in collision
