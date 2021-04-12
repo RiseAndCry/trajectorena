@@ -63,12 +63,13 @@ pub fn player_movement_system(
 pub fn player_shooting_system(
     time: Res<Time>,
     commands: Commands,
-    keyboard_input: Res<Input<KeyCode>>,
+    mouse_buttons_input: Res<Input<MouseButton>>,
     mut spell_cooldown: ResMut<SpellCooldown>,
     player_query: Query<(&Player, &Transform)>,
 ) {
     spell_cooldown.timer.tick(time.delta());
-    if !keyboard_input.pressed(KeyCode::Space) {
+
+    if !mouse_buttons_input.just_released(MouseButton::Left) {
         return;
     }
     if !spell_cooldown.timer.finished() {
