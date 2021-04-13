@@ -28,16 +28,16 @@ pub fn player_movement_system(
     for (player, mut transform) in query.iter_mut() {
         let arena_size = Vec2::from(ARENA_SIZE);
         let mut movement = Vec2::new(0.0, 0.0);
-        if keyboard_input.pressed(KeyCode::Left) {
+        if keyboard_input.pressed(KeyCode::A) {
             movement.x -= 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Right) {
+        if keyboard_input.pressed(KeyCode::D) {
             movement.x += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Up) {
+        if keyboard_input.pressed(KeyCode::W) {
             movement.y += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Down) {
+        if keyboard_input.pressed(KeyCode::S) {
             movement.y -= 1.0;
         }
 
