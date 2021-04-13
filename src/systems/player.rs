@@ -26,7 +26,7 @@ pub fn player_movement_system(
     mut query: Query<(&Player, &mut Transform)>,
 ) {
     for (player, mut transform) in query.iter_mut() {
-        let arena_size = Vec2::from(ARENA_SIZE);
+        let arena_size = Vec3::from(ARENA_SIZE);
         let mut movement = Vec2::new(0.0, 0.0);
         if keyboard_input.pressed(KeyCode::A) {
             movement.x -= 1.0;
