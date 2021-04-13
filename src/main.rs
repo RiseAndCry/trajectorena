@@ -19,7 +19,6 @@ mod prelude {
 
 use prelude::*;
 
-// todo separate code into modules
 fn main() {
     App::build()
         .insert_resource(WindowDescriptor {

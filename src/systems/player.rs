@@ -1,6 +1,7 @@
 #![warn(clippy::pedantic)]
 
 use crate::prelude::*;
+use bevy::input::mouse::MouseButtonInput;
 
 const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
@@ -27,16 +28,16 @@ pub fn player_movement_system(
     for (player, mut transform) in query.iter_mut() {
         let arena_size = Vec2::from(ARENA_SIZE);
         let mut movement = Vec2::new(0.0, 0.0);
-        if keyboard_input.pressed(KeyCode::Left) {
+        if keyboard_input.pressed(KeyCode::A) {
             movement.x -= 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Right) {
+        if keyboard_input.pressed(KeyCode::D) {
             movement.x += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Up) {
+        if keyboard_input.pressed(KeyCode::W) {
             movement.y += 1.0;
         }
-        if keyboard_input.pressed(KeyCode::Down) {
+        if keyboard_input.pressed(KeyCode::S) {
             movement.y -= 1.0;
         }
 
@@ -59,25 +60,35 @@ pub fn player_movement_system(
     }
 }
 
-// todo shoot in certain direction
 pub fn player_shooting_system(
     time: Res<Time>,
-    commands: Commands,
-    keyboard_input: Res<Input<KeyCode>>,
+    mut commands: Commands,
+    mut evr_mouse_btn: EventReader<MouseButtonInput>,
+    mut evr_cursor: EventReader<CursorMoved>,
     mut spell_cooldown: ResMut<SpellCooldown>,
     player_query: Query<(&Player, &Transform)>,
 ) {
     spell_cooldown.timer.tick(time.delta());
-    if !keyboard_input.pressed(KeyCode::Space) {
-        return;
-    }
-    if !spell_cooldown.timer.finished() {
-        return;
-    }
 
+    let mut direction = Vec3::ZERO;
     let (_, player_transform) = player_query.single()
         .expect("Second player is not implemented yet");
 
-    spawn_spell(commands, player_transform);
-    spell_cooldown.timer.reset();
+    if !spell_cooldown.timer.finished() {
+        return;
+    }
+    for ev in evr_cursor.iter() {
+        // cursor to world coordinates, since bevy does not yet have built-in function for this
+        // (https://bevy-cheatbook.github.io/cookbook/cursor2world.html)
+        let cursor_world_pos = ev.position - Vec2::new(SCREEN_WIDTH, SCREEN_HEIGHT) / 2.0;
+        let cursor_world_pos: Vec3 = Vec3::new(cursor_world_pos.x, cursor_world_pos.y, 0.0);
+        direction = cursor_world_pos - player_transform.translation;
+    }
+
+    for ev in evr_mouse_btn.iter() {
+        if !ev.state.is_pressed() && ev.button == MouseButton::Left {
+            spawn_spell(&mut commands, player_transform, direction);
+            spell_cooldown.timer.reset();
+        }
+    }
 }

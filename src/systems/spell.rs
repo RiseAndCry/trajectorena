@@ -5,7 +5,7 @@ use crate::prelude::*;
 const SPELL_VELOCITY: f32 = 400.0;
 const SPELL_STARTING_POSITION_OFFSET: (f32, f32, f32) = (0.0, 20.0, 0.0);
 
-pub fn spawn_spell(mut commands: Commands, player_transform: &Transform) {
+pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direction: Vec3) {
 
     let mut spell_starting_position = player_transform.translation.clone();
     spell_starting_position += Vec3::from(SPELL_STARTING_POSITION_OFFSET);
@@ -17,7 +17,7 @@ pub fn spawn_spell(mut commands: Commands, player_transform: &Transform) {
             sprite: Sprite::new(Vec2::new(20.0, 20.0)),
             ..Default::default()
         },
-        movement: Movement::new(SPELL_VELOCITY * Vec3::new(0.5, 0.5, 0.0).normalize()),
+        movement: Movement::new(SPELL_VELOCITY * direction.normalize()),
     });
 }
 
