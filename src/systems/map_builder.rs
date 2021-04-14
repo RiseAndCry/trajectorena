@@ -4,6 +4,7 @@ use crate::prelude::*;
 
 pub const ARENA_SIZE: (f32, f32, f32) = (SCREEN_WIDTH / 2.0, SCREEN_HEIGHT, 0.0);
 pub const ARENA_WALL_THICKNESS: f32 = 5.0;
+pub const CASTLE_WALL_THICKNESS: f32 = 20.0;
 
 const CASTLE_WALL_LENGTH: f32 = ARENA_SIZE.0 / 4.0;
 const CASTLE_WALL_Y_TRANSLATION: f32 = ARENA_SIZE.1 / 3.0;
@@ -49,8 +50,8 @@ pub fn spawn_castles(commands: &mut Commands, materials: &mut ResMut<Assets<Colo
             material: castle_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, arena.y / 2.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
-                arena.x + ARENA_WALL_THICKNESS,
-                ARENA_WALL_THICKNESS,
+                arena.x,
+                CASTLE_WALL_THICKNESS,
             )),
             ..Default::default()
         });
@@ -61,8 +62,8 @@ pub fn spawn_castles(commands: &mut Commands, materials: &mut ResMut<Assets<Colo
             material: castle_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, -arena.y / 2.0, 0.0)),
             sprite: Sprite::new(Vec2::new(
-                arena.x + ARENA_WALL_THICKNESS,
-                ARENA_WALL_THICKNESS,
+                arena.x,
+                CASTLE_WALL_THICKNESS,
             )),
             ..Default::default()
         });

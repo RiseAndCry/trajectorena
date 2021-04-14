@@ -34,6 +34,7 @@ fn main() {
         .add_system(spell_collision_system.system())
         .add_system(player_movement_system.system())
         .add_system(player_shooting_system.system())
+        .add_system(despawn_system.system())
         .run();
 }
 

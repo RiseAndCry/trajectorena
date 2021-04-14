@@ -22,6 +22,7 @@ impl SpellCooldown {
 pub struct SpellBundle {
     pub spell: Spell,
     pub movement: Movement,
+    pub despawnable: Despawnable,
     #[bundle]
     pub sprite: SpriteBundle,
 }
