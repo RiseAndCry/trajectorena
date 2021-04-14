@@ -39,6 +39,7 @@ fn main() {
 
 fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
     spawn_arena_bounds(&mut commands, &mut materials);
+    spawn_castles(&mut commands, &mut materials);
     spawn_castle_walls(&mut commands, &mut materials);
     spawn_player(&mut commands, &mut materials);
 
