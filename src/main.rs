@@ -29,6 +29,7 @@ fn main() {
         })
         .insert_resource(SpellCooldown::new())
         .add_plugins(DefaultPlugins)
+        .add_system(bevy::input::system::exit_on_esc_system.system())
         .add_startup_system(setup.system())
         .add_system(spell_movement_system.system())
         .add_system(spell_collision_system.system())
