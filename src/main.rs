@@ -1,5 +1,6 @@
 #![warn(clippy::pedantic)]
 
+mod resources;
 mod components;
 mod systems;
 
@@ -9,6 +10,7 @@ mod prelude {
         sprite::collide_aabb::{collide, Collision},
     };
 
+    pub use crate::resources::*;
     pub use crate::components::*;
     pub use crate::systems::*;
 
@@ -28,6 +30,7 @@ fn main() {
             ..Default::default()
         })
         .insert_resource(SpellCooldown::new())
+        .insert_resource(CastleHealth::new())
         .add_plugins(DefaultPlugins)
         .add_system(bevy::input::system::exit_on_esc_system.system())
         .add_startup_system(setup.system())

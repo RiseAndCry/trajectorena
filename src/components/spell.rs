@@ -6,6 +6,7 @@ const SPELL_COOLDOWN: f32 = 0.5;
 
 pub struct Spell;
 
+// todo move to resources
 pub struct SpellCooldown {
     pub timer: Timer,
 }
