@@ -39,3 +39,12 @@ pub fn spawn_score_text(commands: &mut Commands, asset_server: &Res<AssetServer>
         })
         .insert(ScoreText);
 }
+
+pub fn score_update_system(
+    mut query: Query<&mut Text, With<ScoreText>>,
+    castle_health: ResMut<CastleHealth>
+) {
+    for mut text in query.iter_mut() {
+        text.sections[1].value = castle_health.health.to_string();
+    }
+}
