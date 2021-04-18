@@ -2,4 +2,4 @@
 
 use crate::prelude::*;
 
-pub struct ScoreText;
+pub struct HealthText;

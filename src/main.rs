@@ -34,7 +34,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_system(bevy::input::system::exit_on_esc_system.system())
         .add_startup_system(setup.system())
-        .add_system(score_update_system.system())
+        .add_system(health_update_system.system())
         .add_system(spell_movement_system.system())
         .add_system(spell_collision_system.system())
         .add_system(player_movement_system.system())
@@ -48,7 +48,7 @@ fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    spawn_score_text(&mut commands, &asset_server);
+    spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
     spawn_castle_walls(&mut commands, &mut materials);

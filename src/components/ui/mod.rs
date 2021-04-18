@@ -1,5 +1,5 @@
 #![warn(clippy::pedantic)]
 
-pub mod score_text;
+pub mod health_text;
 
-pub use crate::components::ui::score_text::*;
+pub use crate::components::ui::health_text::*;

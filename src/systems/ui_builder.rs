@@ -2,7 +2,7 @@
 
 use crate::prelude::*;
 
-pub fn spawn_score_text(commands: &mut Commands, asset_server: &Res<AssetServer>) {
+pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer>) {
     commands
         .spawn_bundle(TextBundle {
             style: Style {
@@ -37,11 +37,11 @@ pub fn spawn_score_text(commands: &mut Commands, asset_server: &Res<AssetServer>
             },
             ..Default::default()
         })
-        .insert(ScoreText);
+        .insert(HealthText);
 }
 
-pub fn score_update_system(
-    mut query: Query<&mut Text, With<ScoreText>>,
+pub fn health_update_system(
+    mut query: Query<&mut Text, With<HealthText>>,
     castle_health: ResMut<CastleHealth>
 ) {
     for mut text in query.iter_mut() {

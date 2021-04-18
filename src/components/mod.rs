@@ -8,7 +8,7 @@ mod spell;
 mod collision;
 mod despawn;
 
-pub use crate::components::ui::score_text::*;
+pub use crate::components::ui::health_text::*;
 
 pub use crate::components::movement::*;
 pub use crate::components::player::*;
