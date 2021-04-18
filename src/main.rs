@@ -42,11 +42,17 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut materials: ResMut<Assets<ColorMaterial>>) {
+fn setup(
+    mut commands: Commands,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>
+) {
+    spawn_score_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
     spawn_castle_walls(&mut commands, &mut materials);
     spawn_player(&mut commands, &mut materials);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(UiCameraBundle::default());
 }
