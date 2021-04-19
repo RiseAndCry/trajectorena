@@ -10,6 +10,7 @@ mod despawn;
 mod app_state;
 
 pub use crate::components::ui::health_text::*;
+pub use crate::components::ui::game_over_text::*;
 
 pub use crate::components::movement::*;
 pub use crate::components::player::*;
