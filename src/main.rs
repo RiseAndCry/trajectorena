@@ -23,6 +23,9 @@ use prelude::*;
 
 fn main() {
     App::build()
+        .add_state(AppState::InGame)
+        .add_plugins(DefaultPlugins)
+        .add_system(bevy::input::system::exit_on_esc_system.system())
         .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
@@ -31,15 +34,20 @@ fn main() {
         })
         .insert_resource(SpellCooldown::new())
         .insert_resource(CastleHealth::new())
-        .add_plugins(DefaultPlugins)
-        .add_system(bevy::input::system::exit_on_esc_system.system())
-        .add_startup_system(setup.system())
-        .add_system(health_update_system.system())
-        .add_system(spell_movement_system.system())
-        .add_system(spell_collision_system.system())
-        .add_system(player_movement_system.system())
-        .add_system(player_shooting_system.system())
-        .add_system(despawn_system.system())
+
+        .add_system_set(
+            SystemSet::on_enter(AppState::InGame)
+                .with_system(setup.system())
+        )
+        .add_system_set(
+            SystemSet::on_update(AppState::InGame)
+                .with_system(health_update_system.system())
+                .with_system(spell_movement_system.system())
+                .with_system(spell_collision_system.system())
+                .with_system(player_movement_system.system())
+                .with_system(player_shooting_system.system())
+                .with_system(despawn_system.system())
+        )
         .run();
 }
 
@@ -48,6 +56,7 @@ fn setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
+    // todo move spawning outside of systems (maybe 'setup' folder) ?
     spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
