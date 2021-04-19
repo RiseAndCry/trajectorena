@@ -34,10 +34,11 @@ fn main() {
         })
         .insert_resource(SpellCooldown::new())
         .insert_resource(CastleHealth::new())
+        .add_system(state_update_system.system())
 
         .add_system_set(
             SystemSet::on_enter(AppState::InGame)
-                .with_system(setup.system())
+                .with_system(in_game_setup.system())
         )
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
@@ -51,7 +52,7 @@ fn main() {
         .run();
 }
 
-fn setup(
+fn in_game_setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
