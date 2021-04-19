@@ -49,6 +49,11 @@ fn main() {
                 .with_system(player_shooting_system.system())
                 .with_system(despawn_system.system())
         )
+        .add_system_set(
+            SystemSet::on_enter(AppState::GameOver)
+                .with_system(game_over_setup.system())
+                // todo tear down inGame state
+        )
         .run();
 }
 
@@ -63,6 +68,17 @@ fn in_game_setup(
     spawn_castles(&mut commands, &mut materials);
     spawn_castle_walls(&mut commands, &mut materials);
     spawn_player(&mut commands, &mut materials);
+
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(UiCameraBundle::default());
+}
+
+fn game_over_setup(
+    mut commands: Commands,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>
+) {
+    spawn_game_over_text(&mut commands, &mut materials, &asset_server);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());
