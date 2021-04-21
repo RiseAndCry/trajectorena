@@ -51,8 +51,9 @@ fn main() {
         )
         .add_system_set(
             SystemSet::on_enter(AppState::GameOver)
+                .with_system(despawn_everything_system.system())
                 .with_system(game_over_setup.system())
-                // todo tear down inGame state
+                // todo add a button to restart the game
         )
         .run();
 }
