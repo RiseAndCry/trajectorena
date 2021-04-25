@@ -21,9 +21,9 @@ pub fn despawn_system(
 
 pub fn despawn_everything_system(
     mut commands: Commands,
-    mut entity_query: Query<(Entity)>,
+    entity_query: Query<Entity>,
 ) {
-    for (entity) in entity_query.iter() {
+    for entity in entity_query.iter() {
         commands.entity(entity).despawn();
     }
 }

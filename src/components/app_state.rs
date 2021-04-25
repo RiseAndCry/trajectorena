@@ -4,7 +4,7 @@ use crate::prelude::*;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
 pub enum AppState {
-    // todo MainMenu
+    Menu,
     InGame,
     GameOver,
 }

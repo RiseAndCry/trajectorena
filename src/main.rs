@@ -23,9 +23,7 @@ use prelude::*;
 
 fn main() {
     App::build()
-        .add_state(AppState::InGame)
         .add_plugins(DefaultPlugins)
-        .add_system(bevy::input::system::exit_on_esc_system.system())
         .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
@@ -34,12 +32,13 @@ fn main() {
         })
         .insert_resource(SpellCooldown::new())
         .insert_resource(CastleHealth::new())
-        .add_system(state_update_system.system())
+        .init_resource::<ButtonMaterials>()
 
-        .add_system_set(
-            SystemSet::on_enter(AppState::InGame)
-                .with_system(in_game_setup.system())
-        )
+        .add_state(AppState::Menu)
+        .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
+        .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system.system()))
+        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(cleanup_menu.system()))
+        .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup.system()))
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(health_update_system.system())
@@ -50,12 +49,29 @@ fn main() {
                 .with_system(despawn_system.system())
         )
         .add_system_set(
-            SystemSet::on_enter(AppState::GameOver)
-                .with_system(despawn_everything_system.system())
-                .with_system(game_over_setup.system())
-                // todo add a button to restart the game
+            SystemSet::on_exit(AppState::InGame).with_system(despawn_everything_system.system())
         )
+        .add_system_set(
+            // todo show `Main menu` button
+            SystemSet::on_enter(AppState::GameOver).with_system(game_over_setup.system())
+        )
+
+        .add_system(state_update_system.system())
+
+        .add_system(bevy::input::system::exit_on_esc_system.system())
         .run();
+}
+
+fn main_menu_setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    button_materials: Res<ButtonMaterials>,
+) {
+    let button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
+
+    commands.insert_resource(MenuData { button_entity });
+
+    commands.spawn_bundle(UiCameraBundle::default());
 }
 
 fn in_game_setup(
