@@ -70,10 +70,11 @@ fn main_menu_setup(
     asset_server: Res<AssetServer>,
     button_materials: Res<ButtonMaterials>,
 ) {
-    let button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
-    // todo spawn "Quit" button
+    let play_button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
+    let quit_button_entity = spawn_quit_button(&mut commands, &asset_server, &button_materials);
 
-    commands.insert_resource(MenuData { button_entity });
+    commands.insert_resource(MenuData { button_entity: play_button_entity });
+    commands.insert_resource(MenuData { button_entity: quit_button_entity });
 
     commands.spawn_bundle(UiCameraBundle::default());
 }
