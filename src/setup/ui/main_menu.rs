@@ -87,7 +87,3 @@ fn get_button_bundle(button_materials: &Res<ButtonMaterials>) -> ButtonBundle {
         ..Default::default()
     }
 }
-
-pub fn cleanup_menu(mut commands: Commands, menu_data: Res<MenuData>) {
-    commands.entity(menu_data.button_entity).despawn_recursive();
-}

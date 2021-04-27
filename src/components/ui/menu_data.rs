@@ -3,5 +3,6 @@
 use crate::prelude::*;
 
 pub struct MenuData {
-    pub button_entity: Entity,
+    pub play_button_entity: Entity,
+    pub quit_button_entity: Entity,
 }

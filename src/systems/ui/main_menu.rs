@@ -10,6 +10,7 @@ pub fn main_menu_system(
         (Changed<Interaction>, With<Button>),
     >,
 ) {
+    // todo quit upon clicking `QUIT`
     for (interaction, mut material) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {

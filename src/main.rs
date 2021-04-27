@@ -39,19 +39,19 @@ fn main() {
         .add_state(AppState::Menu)
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
         .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system.system()))
-        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(cleanup_menu.system()))
+        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(despawn_system.system()))
         .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup.system()))
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(health_update_system.system())
                 .with_system(spell_movement_system.system())
                 .with_system(spell_collision_system.system())
+                .with_system(spell_despawn_system.system())
                 .with_system(player_movement_system.system())
                 .with_system(player_shooting_system.system())
-                .with_system(despawn_system.system())
         )
         .add_system_set(
-            SystemSet::on_exit(AppState::InGame).with_system(despawn_everything_system.system())
+            SystemSet::on_exit(AppState::InGame).with_system(despawn_system.system())
         )
         .add_system_set(
             // todo show `Main menu` button
@@ -73,8 +73,7 @@ fn main_menu_setup(
     let play_button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
     let quit_button_entity = spawn_quit_button(&mut commands, &asset_server, &button_materials);
 
-    commands.insert_resource(MenuData { button_entity: play_button_entity });
-    commands.insert_resource(MenuData { button_entity: quit_button_entity });
+    commands.insert_resource(MenuData { play_button_entity, quit_button_entity });
 
     commands.spawn_bundle(UiCameraBundle::default());
 }
