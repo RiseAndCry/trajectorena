@@ -2,17 +2,17 @@
 
 pub mod ui;
 
+pub use crate::components::ui::health_text::*;
+pub use crate::components::ui::game_over_text::*;
+pub use crate::components::ui::button_materials::*;
+pub use crate::components::ui::menu_data::*;
+
 mod movement;
 mod player;
 mod spell;
 mod collision;
 mod despawn;
 mod app_state;
-
-pub use crate::components::ui::health_text::*;
-pub use crate::components::ui::game_over_text::*;
-pub use crate::components::ui::button_materials::*;
-pub use crate::components::ui::menu_data::*;
 
 pub use crate::components::movement::*;
 pub use crate::components::player::*;

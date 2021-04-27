@@ -1,5 +1,6 @@
 #![warn(clippy::pedantic)]
 
+mod setup;
 mod resources;
 mod components;
 mod systems;
@@ -10,6 +11,7 @@ mod prelude {
         sprite::collide_aabb::{collide, Collision},
     };
 
+    pub use crate::setup::*;
     pub use crate::resources::*;
     pub use crate::components::*;
     pub use crate::systems::*;
@@ -58,6 +60,7 @@ fn main() {
 
         .add_system(state_update_system.system())
 
+        // todo ESC should open main menu
         .add_system(bevy::input::system::exit_on_esc_system.system())
         .run();
 }
@@ -68,6 +71,7 @@ fn main_menu_setup(
     button_materials: Res<ButtonMaterials>,
 ) {
     let button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
+    // todo spawn "Quit" button
 
     commands.insert_resource(MenuData { button_entity });
 
@@ -79,7 +83,6 @@ fn in_game_setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    // todo move spawning outside of systems (maybe 'setup' folder) ?
     spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
