@@ -65,7 +65,7 @@ pub fn spawn_quit_button(
 
 fn get_button_bundle(button_materials: &Res<ButtonMaterials>) -> ButtonBundle {
     ButtonBundle {
-        // todo try to use flex instead of this manual calculation
+        // todo try to use flex instead of this manual calculation (NodeBundle as in GameOver text)
         style: Style {
             size: Size::new(Val::Px(BUTTON_SIZE.0), Val::Px(BUTTON_SIZE.1)),
             // center button

@@ -32,14 +32,14 @@ fn main() {
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
-        .insert_resource(SpellCooldown::new())
-        .insert_resource(CastleHealth::new())
         .init_resource::<ButtonMaterials>()
 
         .add_state(AppState::Menu)
+        // <><--- MainMenu ---><>
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
         .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system.system()))
         .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(despawn_system.system()))
+        // <><--- InGame ---><>
         .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup.system()))
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
@@ -49,16 +49,22 @@ fn main() {
                 .with_system(spell_despawn_system.system())
                 .with_system(player_movement_system.system())
                 .with_system(player_shooting_system.system())
+                .with_system(state_update_system.system())
         )
         .add_system_set(
             SystemSet::on_exit(AppState::InGame).with_system(despawn_system.system())
         )
+        // <><--- GameOver ---><>
         .add_system_set(
-            // todo show `Main menu` button
-            SystemSet::on_enter(AppState::GameOver).with_system(game_over_setup.system())
+            SystemSet::on_enter(AppState::GameOver)
+                .with_system(game_over_setup.system())
+                .with_system(main_menu_setup.system())
         )
-
-        .add_system(state_update_system.system())
+        .add_system_set(
+            SystemSet::on_update(AppState::GameOver)
+                .with_system(main_menu_system.system())
+        )
+        .add_system_set(SystemSet::on_exit(AppState::GameOver).with_system(despawn_system.system()))
 
         // todo ESC should open main menu
         .add_system(bevy::input::system::exit_on_esc_system.system())
@@ -83,6 +89,9 @@ fn in_game_setup(
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
+    commands.insert_resource(CastleHealth::new());
+    commands.insert_resource(SpellCooldown::new());
+
     spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
