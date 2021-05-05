@@ -1,5 +1,6 @@
 #![warn(clippy::pedantic)]
 
+mod setup;
 mod resources;
 mod components;
 mod systems;
@@ -10,6 +11,7 @@ mod prelude {
         sprite::collide_aabb::{collide, Collision},
     };
 
+    pub use crate::setup::*;
     pub use crate::resources::*;
     pub use crate::components::*;
     pub use crate::systems::*;
@@ -23,36 +25,89 @@ use prelude::*;
 
 fn main() {
     App::build()
+        .add_plugins(DefaultPlugins)
         .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
-        .insert_resource(SpellCooldown::new())
-        .insert_resource(CastleHealth::new())
-        .add_plugins(DefaultPlugins)
+        .init_resource::<ButtonMaterials>()
+
+        .add_state(AppState::Menu)
+        // <><--- MainMenu ---><>
+        .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
+        .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system.system()))
+        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(despawn_system.system()))
+        // <><--- InGame ---><>
+        .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup.system()))
+        .add_system_set(
+            SystemSet::on_update(AppState::InGame)
+                .with_system(health_update_system.system())
+                .with_system(spell_movement_system.system())
+                .with_system(spell_collision_system.system())
+                .with_system(spell_despawn_system.system())
+                .with_system(player_movement_system.system())
+                .with_system(player_shooting_system.system())
+                .with_system(state_update_system.system())
+        )
+        .add_system_set(
+            SystemSet::on_exit(AppState::InGame).with_system(despawn_system.system())
+        )
+        // <><--- GameOver ---><>
+        .add_system_set(
+            SystemSet::on_enter(AppState::GameOver)
+                .with_system(game_over_setup.system())
+                .with_system(main_menu_setup.system())
+        )
+        .add_system_set(
+            SystemSet::on_update(AppState::GameOver)
+                .with_system(main_menu_system.system())
+        )
+        .add_system_set(SystemSet::on_exit(AppState::GameOver).with_system(despawn_system.system()))
+
+        // todo ESC should open main menu
         .add_system(bevy::input::system::exit_on_esc_system.system())
-        .add_startup_system(setup.system())
-        .add_system(health_update_system.system())
-        .add_system(spell_movement_system.system())
-        .add_system(spell_collision_system.system())
-        .add_system(player_movement_system.system())
-        .add_system(player_shooting_system.system())
-        .add_system(despawn_system.system())
         .run();
 }
 
-fn setup(
+fn main_menu_setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    button_materials: Res<ButtonMaterials>,
+) {
+    let play_button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
+    let quit_button_entity = spawn_quit_button(&mut commands, &asset_server, &button_materials);
+
+    commands.insert_resource(MenuData { play_button_entity, quit_button_entity });
+
+    commands.spawn_bundle(UiCameraBundle::default());
+}
+
+fn in_game_setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
+    commands.insert_resource(CastleHealth::new());
+    commands.insert_resource(SpellCooldown::new());
+
     spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands, &mut materials);
     spawn_castles(&mut commands, &mut materials);
     spawn_castle_walls(&mut commands, &mut materials);
     spawn_player(&mut commands, &mut materials);
+
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
+    commands.spawn_bundle(UiCameraBundle::default());
+}
+
+fn game_over_setup(
+    mut commands: Commands,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+    asset_server: Res<AssetServer>
+) {
+    spawn_game_over_text(&mut commands, &mut materials, &asset_server);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());

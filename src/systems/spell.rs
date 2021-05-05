@@ -2,28 +2,6 @@
 
 use crate::prelude::*;
 
-pub const SPELL_SIZE: (f32, f32) = (20.0, 20.0);
-
-const SPELL_VELOCITY: f32 = 400.0;
-const SPELL_STARTING_POSITION_OFFSET: (f32, f32, f32) = (0.0, 20.0, 0.0);
-
-pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direction: Vec3) {
-
-    let mut spell_starting_position = player_transform.translation.clone();
-    spell_starting_position += Vec3::from(SPELL_STARTING_POSITION_OFFSET);
-
-    commands.spawn_bundle(SpellBundle {
-        spell: Spell,
-        sprite: SpriteBundle {
-            transform: Transform::from_translation(spell_starting_position),
-            sprite: Sprite::new(Vec2::from(SPELL_SIZE)),
-            ..Default::default()
-        },
-        movement: Movement::new(SPELL_VELOCITY * direction.normalize()),
-        despawnable: Despawnable,
-    });
-}
-
 pub fn spell_movement_system(
     time: Res<Time>,
     mut spell_query: Query<(&Spell, &Movement, &mut Transform)>
@@ -33,6 +11,23 @@ pub fn spell_movement_system(
 
     for (_, movement, mut transform) in spell_query.iter_mut() {
         transform.translation += movement.velocity * delta_seconds;
+    }
+}
+
+pub fn spell_despawn_system(
+    mut commands: Commands,
+    mut transformable_query: Query<(Entity, &Transform, &Sprite, &Despawnable)>,
+    mut castle_health: ResMut<CastleHealth>
+) {
+    for (entity, transform, sprite, _) in transformable_query.iter_mut() {
+        let despawn_top_y = SCREEN_HEIGHT / 2.0 - CASTLE_WALL_THICKNESS + sprite.size.y / 2.0;
+        let despawn_bottom_y = -SCREEN_HEIGHT / 2.0 + CASTLE_WALL_THICKNESS - sprite.size.y / 2.0;
+
+        if transform.translation.y >= despawn_top_y || transform.translation.y <= despawn_bottom_y
+        {
+            commands.entity(entity).despawn();
+            castle_health.health -= 1;
+        }
     }
 }
 

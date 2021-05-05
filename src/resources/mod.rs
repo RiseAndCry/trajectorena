@@ -1,5 +1,9 @@
 #![warn(clippy::pedantic)]
 
+pub mod ui;
+
+pub use crate::resources::ui::menu_data::*;
+
 mod spell_cooldown;
 mod castle_health;
 
