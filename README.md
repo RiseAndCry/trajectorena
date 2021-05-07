@@ -1,0 +1,3 @@
+# trajectorena
+
+`cargo run` 
