@@ -2,6 +2,10 @@
 
 use crate::prelude::*;
 
+// todo centralize all colors
+pub const BUTTON_COLOR_DEFAULT: Color = Color::rgb(0.15, 0.15, 0.15);
+pub const BUTTON_COLOR_HOVERED: Color = Color::rgb(0.25, 0.25, 0.25);
+
 const BUTTON_SIZE: (f32, f32) = (150.0, 65.0);
 
 pub fn spawn_play_button(
@@ -81,6 +85,7 @@ fn get_button_bundle() -> ButtonBundle {
             flex_direction: FlexDirection::Column,
             ..Default::default()
         },
+        color: BUTTON_COLOR_DEFAULT.into(),
         ..Default::default()
     }
 }

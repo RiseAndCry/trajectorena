@@ -32,8 +32,6 @@ fn main() {
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
-        .init_resource::<ButtonMaterials>()
-
         .add_state(AppState::Menu)
         // <><--- MainMenu ---><>
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))

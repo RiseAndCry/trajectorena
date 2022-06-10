@@ -4,7 +4,6 @@ pub mod ui;
 
 pub use crate::components::ui::health_text::*;
 pub use crate::components::ui::game_over_text::*;
-pub use crate::components::ui::button_materials::*;
 
 mod movement;
 mod player;

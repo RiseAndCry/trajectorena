@@ -22,6 +22,7 @@ pub fn spawn_game_over_text(
                 align_items: AlignItems::Center,
                 ..Default::default()
             },
+            color: Color::rgb(0.15, 0.15, 0.15).into(),
             ..Default::default()
         })
         .with_children(|parent| {

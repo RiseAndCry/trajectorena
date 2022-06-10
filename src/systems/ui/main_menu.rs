@@ -3,33 +3,30 @@
 use crate::prelude::*;
 use bevy::app::AppExit;
 
+// todo use a library for UI
 pub fn main_menu_system(
     mut state: ResMut<State<AppState>>,
-    button_materials: Res<ButtonMaterials>,
     menu_data: Res<MenuData>,
     mut exit: EventWriter<AppExit>,
     mut interaction_query: Query<
-        (Entity, &Interaction, &mut Handle<ColorMaterial>),
+        (Entity, &Interaction, &mut UiColor),
         (Changed<Interaction>, With<Button>),
     >,
 ) {
-    for (entity, interaction, mut material) in interaction_query.iter_mut() {
+    for (entity, interaction, mut color) in interaction_query.iter_mut() {
         match *interaction {
             Interaction::Clicked => {
-                *material = button_materials.pressed.clone();
-                // todo why does match not work here ?
-                if entity.id() == menu_data.play_button_entity.id() {
-                    state.set(AppState::InGame).unwrap();
-                }
-                if entity.id() == menu_data.quit_button_entity.id() {
-                    exit.send(AppExit);
+                match entity {
+                    e if e == menu_data.play_button_entity => state.set(AppState::InGame).unwrap(),
+                    e if e == menu_data.quit_button_entity => exit.send(AppExit),
+                    _ => (),
                 }
             }
             Interaction::Hovered => {
-                *material = button_materials.hovered.clone();
+                *color = BUTTON_COLOR_HOVERED.into();
             }
             Interaction::None => {
-                *material = button_materials.normal.clone();
+                *color = BUTTON_COLOR_DEFAULT.into();
             }
         }
     }
