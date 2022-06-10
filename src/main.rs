@@ -24,7 +24,7 @@ mod prelude {
 use prelude::*;
 
 fn main() {
-    App::build()
+    App::new()
         .add_plugins(DefaultPlugins)
         .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
@@ -32,8 +32,6 @@ fn main() {
             height: SCREEN_HEIGHT,
             ..Default::default()
         })
-        .init_resource::<ButtonMaterials>()
-
         .add_state(AppState::Menu)
         // <><--- MainMenu ---><>
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
@@ -74,10 +72,9 @@ fn main() {
 fn main_menu_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    button_materials: Res<ButtonMaterials>,
 ) {
-    let play_button_entity = spawn_play_button(&mut commands, &asset_server, &button_materials);
-    let quit_button_entity = spawn_quit_button(&mut commands, &asset_server, &button_materials);
+    let play_button_entity = spawn_play_button(&mut commands, &asset_server);
+    let quit_button_entity = spawn_quit_button(&mut commands, &asset_server);
 
     commands.insert_resource(MenuData { play_button_entity, quit_button_entity });
 
@@ -86,17 +83,16 @@ fn main_menu_setup(
 
 fn in_game_setup(
     mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
     commands.insert_resource(CastleHealth::new());
     commands.insert_resource(SpellCooldown::new());
 
     spawn_health_text(&mut commands, &asset_server);
-    spawn_arena_bounds(&mut commands, &mut materials);
-    spawn_castles(&mut commands, &mut materials);
-    spawn_castle_walls(&mut commands, &mut materials);
-    spawn_player(&mut commands, &mut materials);
+    spawn_arena_bounds(&mut commands);
+    spawn_castles(&mut commands);
+    spawn_castle_walls(&mut commands);
+    spawn_player(&mut commands);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());
@@ -104,10 +100,9 @@ fn in_game_setup(
 
 fn game_over_setup(
     mut commands: Commands,
-    mut materials: ResMut<Assets<ColorMaterial>>,
     asset_server: Res<AssetServer>
 ) {
-    spawn_game_over_text(&mut commands, &mut materials, &asset_server);
+    spawn_game_over_text(&mut commands, &asset_server);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());
