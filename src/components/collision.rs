@@ -1,6 +1,8 @@
 #![warn(clippy::pedantic)]
 
-#[derive(PartialEq)]
+use crate::prelude::*;
+
+#[derive(Component, PartialEq)]
 pub enum Collider {
     Solid,
 }

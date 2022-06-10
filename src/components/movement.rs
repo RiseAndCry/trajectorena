@@ -2,6 +2,7 @@
 
 use crate::prelude::*;
 
+#[derive(Component)]
 pub struct Movement {
     pub velocity: Vec3,
 }
