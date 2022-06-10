@@ -7,9 +7,8 @@ const BUTTON_SIZE: (f32, f32) = (150.0, 65.0);
 pub fn spawn_play_button(
     commands: &mut Commands,
     asset_server: &Res<AssetServer>,
-    button_materials: &Res<ButtonMaterials>
 ) -> Entity {
-    let mut button_bundle = get_button_bundle(&button_materials);
+    let mut button_bundle = get_button_bundle();
     button_bundle.style.position.top = Val::Percent(35.0);
 
     let button_entity = commands
@@ -37,9 +36,8 @@ pub fn spawn_play_button(
 pub fn spawn_quit_button(
     commands: &mut Commands,
     asset_server: &Res<AssetServer>,
-    button_materials: &Res<ButtonMaterials>
 ) -> Entity {
-    let mut button_bundle = get_button_bundle(&button_materials);
+    let mut button_bundle = get_button_bundle();
     button_bundle.style.position.top = Val::Percent(55.0);
 
     let button_entity = commands
@@ -63,7 +61,7 @@ pub fn spawn_quit_button(
     button_entity
 }
 
-fn get_button_bundle(button_materials: &Res<ButtonMaterials>) -> ButtonBundle {
+fn get_button_bundle() -> ButtonBundle {
     ButtonBundle {
         // todo try to use flex instead of this manual calculation (NodeBundle as in GameOver text)
         style: Style {
@@ -83,7 +81,6 @@ fn get_button_bundle(button_materials: &Res<ButtonMaterials>) -> ButtonBundle {
             flex_direction: FlexDirection::Column,
             ..Default::default()
         },
-        material: button_materials.normal.clone(),
         ..Default::default()
     }
 }

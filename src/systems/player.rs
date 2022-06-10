@@ -56,8 +56,7 @@ pub fn player_shooting_system(
     spell_cooldown.timer.tick(time.delta());
 
     let mut direction = Vec3::ZERO;
-    let (_, player_transform) = player_query.single()
-        .expect("Second player is not implemented yet");
+    let (_, player_transform) = player_query.single();
 
     if !spell_cooldown.timer.finished() {
         return;

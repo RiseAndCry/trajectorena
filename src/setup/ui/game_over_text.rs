@@ -4,7 +4,6 @@ use crate::prelude::*;
 
 pub fn spawn_game_over_text(
     commands: &mut Commands,
-    materials: &mut ResMut<Assets<ColorMaterial>>,
     asset_server: &Res<AssetServer>,
 ) {
     commands
@@ -23,7 +22,6 @@ pub fn spawn_game_over_text(
                 align_items: AlignItems::Center,
                 ..Default::default()
             },
-            material: materials.add(Color::NONE.into()),
             ..Default::default()
         })
         .with_children(|parent| {

@@ -15,7 +15,12 @@ pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direct
         spell: Spell,
         sprite: SpriteBundle {
             transform: Transform::from_translation(spell_starting_position),
-            sprite: Sprite::new(Vec2::from(SPELL_SIZE)),
+            // sprite: Sprite::new(Vec2::from(SPELL_SIZE)),
+            sprite: Sprite {
+                custom_size: Some(Vec2::from(SPELL_SIZE)),
+                // color: Color::YELLOW,
+                ..Default::default()
+            },
             ..Default::default()
         },
         movement: Movement::new(SPELL_VELOCITY * direction.normalize()),

@@ -7,7 +7,7 @@ pub fn spell_collision_system(
     collider_query: Query<(Entity, &Collider, &Transform, &Sprite)>,
 ) {
     for (_, spell_transform, mut spell_movement, sprite) in spell_query.iter_mut() {
-        let spell_size = sprite.size;
+        let spell_size = sprite.custom_size.expect("Sprite size must be set");
 
         for (_, collider, transform, sprite) in collider_query.iter() {
             // collision is not detected if the object is moving too fast, so either it has to be
@@ -17,7 +17,7 @@ pub fn spell_collision_system(
                 spell_transform.translation,
                 spell_size,
                 transform.translation,
-                sprite.size,
+                sprite.custom_size.expect("Sprite size must be set"),
             );
             if let Some(collision) = collision {
                 let mut reflect_x = false;

@@ -9,19 +9,22 @@ pub const CASTLE_WALL_THICKNESS: f32 = 20.0;
 const CASTLE_WALL_LENGTH: f32 = ARENA_SIZE.0 / 4.0;
 const CASTLE_WALL_Y_TRANSLATION: f32 = ARENA_SIZE.1 / 3.0;
 
-pub fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
-    let wall_material = materials.add(Color::WHITE.into());
+pub fn spawn_arena_bounds(commands: &mut Commands) {
     let arena = Vec3::from(ARENA_SIZE);
 
     // right
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(arena.x / 2.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(
-                ARENA_WALL_THICKNESS,
-                arena.y + ARENA_WALL_THICKNESS,
-            )),
+            // todo reuse
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    ARENA_WALL_THICKNESS,
+                    arena.y + ARENA_WALL_THICKNESS,
+                )),
+                color: Color::WHITE,
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
@@ -29,68 +32,75 @@ pub fn spawn_arena_bounds(commands: &mut Commands, materials: &mut ResMut<Assets
     // left
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_translation(Vec3::new(-arena.x / 2.0, 0.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(
-                ARENA_WALL_THICKNESS,
-                arena.y + ARENA_WALL_THICKNESS,
-            )),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    ARENA_WALL_THICKNESS,
+                    arena.y + ARENA_WALL_THICKNESS,
+                )),
+                color: Color::WHITE,
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
 }
 
-pub fn spawn_castles(commands: &mut Commands, materials: &mut ResMut<Assets<ColorMaterial>>) {
-    let castle_material = materials.add(Color::GREEN.into());
+pub fn spawn_castles(commands: &mut Commands) {
     let arena = Vec3::from(ARENA_SIZE);
 
     // top
     commands
         .spawn_bundle(SpriteBundle {
-            material: castle_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, arena.y / 2.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(
-                arena.x,
-                CASTLE_WALL_THICKNESS,
-            )),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    arena.x,
+                    CASTLE_WALL_THICKNESS,
+                )),
+                color: Color::GREEN,
+                ..Default::default()
+            },
             ..Default::default()
         });
 
     // bottom
     commands
         .spawn_bundle(SpriteBundle {
-            material: castle_material.clone(),
             transform: Transform::from_translation(Vec3::new(0.0, -arena.y / 2.0, 0.0)),
-            sprite: Sprite::new(Vec2::new(
-                arena.x,
-                CASTLE_WALL_THICKNESS,
-            )),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    arena.x,
+                    CASTLE_WALL_THICKNESS,
+                )),
+                color: Color::GREEN,
+                ..Default::default()
+            },
             ..Default::default()
         });
 }
 
 pub fn spawn_castle_walls(
     commands: &mut Commands,
-    materials: &mut ResMut<Assets<ColorMaterial>>
 ) {
-    let wall_material = materials.add(Color::rgb(0.8, 0.8, 0.8).into());
     let arena = Vec3::from(ARENA_SIZE);
-
-    let sprite = Sprite::new(Vec2::new(
-        CASTLE_WALL_LENGTH,
-        ARENA_WALL_THICKNESS,
-    ));
 
     // player 1 castle wall left
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_xyz(
                 -arena.x / 2.0 + CASTLE_WALL_LENGTH / 2.0,
                 -CASTLE_WALL_Y_TRANSLATION,
                 0.0
             ),
-            sprite: sprite.clone(),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    CASTLE_WALL_LENGTH,
+                    ARENA_WALL_THICKNESS,
+                )),
+                color: Color::rgb(0.8, 0.8, 0.8),
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
@@ -98,13 +108,19 @@ pub fn spawn_castle_walls(
     // player 1 castle wall right
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_xyz(
                 arena.x / 2.0 - CASTLE_WALL_LENGTH / 2.0,
                 -CASTLE_WALL_Y_TRANSLATION,
                 0.0
             ),
-            sprite: sprite.clone(),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    CASTLE_WALL_LENGTH,
+                    ARENA_WALL_THICKNESS,
+                )),
+                color: Color::rgb(0.8, 0.8, 0.8),
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
@@ -112,13 +128,19 @@ pub fn spawn_castle_walls(
     // player 2 castle wall left
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_xyz(
                 -arena.x / 2.0 + CASTLE_WALL_LENGTH / 2.0,
                 CASTLE_WALL_Y_TRANSLATION,
                 0.0
             ),
-            sprite: sprite.clone(),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    CASTLE_WALL_LENGTH,
+                    ARENA_WALL_THICKNESS,
+                )),
+                color: Color::rgb(0.8, 0.8, 0.8),
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
@@ -126,13 +148,19 @@ pub fn spawn_castle_walls(
     // player 2 castle wall right
     commands
         .spawn_bundle(SpriteBundle {
-            material: wall_material.clone(),
             transform: Transform::from_xyz(
                 arena.x / 2.0 - CASTLE_WALL_LENGTH / 2.0,
                 CASTLE_WALL_Y_TRANSLATION,
                 0.0
             ),
-            sprite: sprite.clone(),
+            sprite: Sprite {
+                custom_size: Some(Vec2::new(
+                    CASTLE_WALL_LENGTH,
+                    ARENA_WALL_THICKNESS,
+                )),
+                color: Color::rgb(0.8, 0.8, 0.8),
+                ..Default::default()
+            },
             ..Default::default()
         })
         .insert(Collider::Solid);
