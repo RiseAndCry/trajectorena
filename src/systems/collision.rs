@@ -28,17 +28,16 @@ pub fn spell_collision_system(
                     Collision::Right => reflect_x = spell_movement.velocity.x < 0.0,
                     Collision::Top => reflect_y = spell_movement.velocity.y < 0.0,
                     Collision::Bottom => reflect_y = spell_movement.velocity.y > 0.0,
+                    Collision::Inside => ()
                 }
 
                 if reflect_x {
                     spell_movement.velocity.x = -spell_movement.velocity.x;
                 }
-
                 if reflect_y {
                     spell_movement.velocity.y = -spell_movement.velocity.y;
                 }
 
-                // break if this collide is on a solid, otherwise continue check whether a solid is also in collision
                 if *collider == Collider::Solid {
                     break;
                 }
