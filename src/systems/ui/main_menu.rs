@@ -1,7 +1,8 @@
 use crate::prelude::*;
 use bevy::app::AppExit;
 
-// todo use a library for UI
+// todo figure out a better solution (the Query will often be complex)
+#[allow(clippy::type_complexity)]
 pub fn main_menu_system(
     mut state: ResMut<State<AppState>>,
     menu_data: Res<MenuData>,

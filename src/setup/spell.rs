@@ -6,7 +6,7 @@ const SPELL_VELOCITY: f32 = 400.0;
 const SPELL_STARTING_POSITION_OFFSET: (f32, f32, f32) = (0.0, 20.0, 0.0);
 
 pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direction: Vec3) {
-    let mut spell_starting_position = player_transform.translation.clone();
+    let mut spell_starting_position = player_transform.translation;
     spell_starting_position += Vec3::from(SPELL_STARTING_POSITION_OFFSET);
 
     commands.spawn_bundle(SpellBundle {
