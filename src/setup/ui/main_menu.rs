@@ -8,45 +8,36 @@ const BUTTON_SIZE: (f32, f32) = (150.0, 65.0);
 
 pub fn spawn_play_button(
     commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
+    asset_server: &Res<AssetServer>
 ) -> Entity {
     let mut button_bundle = get_button_bundle();
     button_bundle.style.position.top = Val::Percent(35.0);
 
-    let button_entity = commands
-        .spawn_bundle(button_bundle)
-        .with_children(|parent| {
-            parent.spawn_bundle(TextBundle {
-                text: Text::with_section(
-                    "Play",
-                    TextStyle {
-                        font: asset_server.load("fonts/FiraSans-Bold.ttf"),
-                        font_size: 40.0,
-                        color: Color::rgb(0.9, 0.9, 0.9),
-                    },
-                    TextAlignment::default(),
-                ),
-                ..default()
-            });
-        })
-        .id();
-
-    button_entity
+    spawn_button(commands, asset_server, button_bundle, "Play")
 }
 
 pub fn spawn_quit_button(
     commands: &mut Commands,
-    asset_server: &Res<AssetServer>,
+    asset_server: &Res<AssetServer>
 ) -> Entity {
     let mut button_bundle = get_button_bundle();
     button_bundle.style.position.top = Val::Percent(55.0);
 
+    spawn_button(commands, asset_server, button_bundle, "Quit")
+}
+
+fn spawn_button(
+    commands: &mut Commands,
+    asset_server: &Res<AssetServer>,
+    button_bundle: ButtonBundle,
+    name: &str,
+) -> Entity {
     let button_entity = commands
         .spawn_bundle(button_bundle)
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
                 text: Text::with_section(
-                    "Quit",
+                    name,
                     TextStyle {
                         font: asset_server.load("fonts/FiraSans-Bold.ttf"),
                         font_size: 40.0,
