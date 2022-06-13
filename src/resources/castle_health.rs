@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 pub const MAX_HEALTH_CASTLE: i32 = 3;
 
 pub struct CastleHealth {

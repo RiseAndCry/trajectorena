@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub fn health_update_system(

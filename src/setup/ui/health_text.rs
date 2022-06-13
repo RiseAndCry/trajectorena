@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer>) {
@@ -10,9 +8,9 @@ pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer
                 position: Rect {
                     top: Val::Px(0.0),
                     left: Val::Px(SCREEN_WIDTH / 2.0 + ARENA_SIZE.0 / 2.0 + 10.0),
-                    ..Default::default()
+                    ..default()
                 },
-                ..Default::default()
+                ..default()
             },
             text: Text {
                 sections: vec![
@@ -33,9 +31,9 @@ pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer
                         },
                     },
                 ],
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(HealthText);
 }

@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 pub mod ui;
 
 pub use crate::components::ui::health_text::*;

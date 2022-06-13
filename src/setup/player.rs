@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
@@ -12,9 +10,9 @@ pub fn spawn_player(commands: &mut Commands) {
             sprite: Sprite {
                 custom_size: Some(Vec2::from(PLAYER_SIZE)),
                 color: Color::YELLOW,
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Player::new());
 }

@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 const SPELL_COOLDOWN: f32 = 0.5;

@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub fn spawn_game_over_text(
@@ -20,14 +18,14 @@ pub fn spawn_game_over_text(
                 position_type: PositionType::Absolute,
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                ..Default::default()
+                ..default()
             },
             color: Color::rgb(0.15, 0.15, 0.15).into(),
-            ..Default::default()
+            ..default()
         })
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
-                style: Default::default(),
+                style: Style::default(),
                 text: Text::with_section(
                     "Game Over !",
                     TextStyle {
@@ -35,9 +33,9 @@ pub fn spawn_game_over_text(
                         font_size: 100.0,
                         color: Color::RED,
                     },
-                    Default::default(),
+                    TextAlignment::default(),
                 ),
-                ..Default::default()
+                ..default()
             });
         })
         .insert(GameOverText);

@@ -1,4 +1,4 @@
-#![warn(clippy::pedantic)]
+#![warn(clippy::all)]
 
 mod setup;
 mod resources;
@@ -30,42 +30,42 @@ fn main() {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
             height: SCREEN_HEIGHT,
-            ..Default::default()
+            ..default()
         })
         .add_state(AppState::Menu)
         // <><--- MainMenu ---><>
-        .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup.system()))
-        .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system.system()))
-        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(despawn_system.system()))
+        .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup))
+        .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system))
+        .add_system_set(SystemSet::on_exit(AppState::Menu).with_system(despawn_system))
         // <><--- InGame ---><>
-        .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup.system()))
+        .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup))
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
-                .with_system(health_update_system.system())
-                .with_system(spell_movement_system.system())
-                .with_system(spell_collision_system.system())
-                .with_system(spell_despawn_system.system())
-                .with_system(player_movement_system.system())
-                .with_system(player_shooting_system.system())
-                .with_system(state_update_system.system())
+                .with_system(health_update_system)
+                .with_system(spell_movement_system)
+                .with_system(spell_collision_system)
+                .with_system(spell_despawn_system)
+                .with_system(player_movement_system)
+                .with_system(player_shooting_system)
+                .with_system(state_update_system)
         )
         .add_system_set(
-            SystemSet::on_exit(AppState::InGame).with_system(despawn_system.system())
+            SystemSet::on_exit(AppState::InGame).with_system(despawn_system)
         )
         // <><--- GameOver ---><>
         .add_system_set(
             SystemSet::on_enter(AppState::GameOver)
-                .with_system(game_over_setup.system())
-                .with_system(main_menu_setup.system())
+                .with_system(game_over_setup)
+                .with_system(main_menu_setup)
         )
         .add_system_set(
             SystemSet::on_update(AppState::GameOver)
-                .with_system(main_menu_system.system())
+                .with_system(main_menu_system)
         )
-        .add_system_set(SystemSet::on_exit(AppState::GameOver).with_system(despawn_system.system()))
+        .add_system_set(SystemSet::on_exit(AppState::GameOver).with_system(despawn_system))
 
         // todo ESC should open main menu
-        .add_system(bevy::input::system::exit_on_esc_system.system())
+        .add_system(bevy::input::system::exit_on_esc_system)
         .run();
 }
 

@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 const PLAYER_SPEED: f32 = 300.0;
