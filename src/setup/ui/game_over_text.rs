@@ -25,7 +25,7 @@ pub fn spawn_game_over_text(
         })
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
-                style: Default::default(),
+                style: Style::default(),
                 text: Text::with_section(
                     "Game Over !",
                     TextStyle {
@@ -33,7 +33,7 @@ pub fn spawn_game_over_text(
                         font_size: 100.0,
                         color: Color::RED,
                     },
-                    Default::default(),
+                    TextAlignment::default(),
                 ),
                 ..default()
             });

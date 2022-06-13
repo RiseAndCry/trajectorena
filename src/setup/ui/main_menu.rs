@@ -24,7 +24,7 @@ pub fn spawn_play_button(
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),
                     },
-                    Default::default(),
+                    TextAlignment::default(),
                 ),
                 ..default()
             });
@@ -52,7 +52,7 @@ pub fn spawn_quit_button(
                         font_size: 40.0,
                         color: Color::rgb(0.9, 0.9, 0.9),
                     },
-                    Default::default(),
+                    TextAlignment::default(),
                 ),
                 ..default()
             });
