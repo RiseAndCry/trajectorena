@@ -16,7 +16,6 @@ pub fn spawn_play_button(
     let button_entity = commands
         .spawn_bundle(button_bundle)
         .with_children(|parent| {
-            // todo also function ?
             parent.spawn_bundle(TextBundle {
                 text: Text::with_section(
                     "Play",
@@ -27,7 +26,7 @@ pub fn spawn_play_button(
                     },
                     Default::default(),
                 ),
-                ..Default::default()
+                ..default()
             });
         })
         .id();
@@ -55,7 +54,7 @@ pub fn spawn_quit_button(
                     },
                     Default::default(),
                 ),
-                ..Default::default()
+                ..default()
             });
         })
         .id();
@@ -81,9 +80,9 @@ fn get_button_bundle() -> ButtonBundle {
             // vertically center child text
             align_items: AlignItems::Center,
             flex_direction: FlexDirection::Column,
-            ..Default::default()
+            ..default()
         },
         color: BUTTON_COLOR_DEFAULT.into(),
-        ..Default::default()
+        ..default()
     }
 }

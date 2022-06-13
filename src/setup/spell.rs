@@ -15,9 +15,9 @@ pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direct
             transform: Transform::from_translation(spell_starting_position),
             sprite: Sprite {
                 custom_size: Some(Vec2::from(SPELL_SIZE)),
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         },
         movement: Movement::new(SPELL_VELOCITY * direction.normalize()),
         despawnable: Despawnable,

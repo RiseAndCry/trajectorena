@@ -21,9 +21,9 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
                     arena.y + ARENA_WALL_THICKNESS,
                 )),
                 color: Color::WHITE,
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 
@@ -37,9 +37,9 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
                     arena.y + ARENA_WALL_THICKNESS,
                 )),
                 color: Color::WHITE,
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 }
@@ -57,9 +57,9 @@ pub fn spawn_castles(commands: &mut Commands) {
                     CASTLE_WALL_THICKNESS,
                 )),
                 color: Color::GREEN,
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         });
 
     // bottom
@@ -72,9 +72,9 @@ pub fn spawn_castles(commands: &mut Commands) {
                     CASTLE_WALL_THICKNESS,
                 )),
                 color: Color::GREEN,
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         });
 }
 
@@ -97,9 +97,9 @@ pub fn spawn_castle_walls(
                     ARENA_WALL_THICKNESS,
                 )),
                 color: Color::rgb(0.8, 0.8, 0.8),
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 
@@ -117,9 +117,9 @@ pub fn spawn_castle_walls(
                     ARENA_WALL_THICKNESS,
                 )),
                 color: Color::rgb(0.8, 0.8, 0.8),
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 
@@ -137,9 +137,9 @@ pub fn spawn_castle_walls(
                     ARENA_WALL_THICKNESS,
                 )),
                 color: Color::rgb(0.8, 0.8, 0.8),
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 
@@ -157,9 +157,9 @@ pub fn spawn_castle_walls(
                     ARENA_WALL_THICKNESS,
                 )),
                 color: Color::rgb(0.8, 0.8, 0.8),
-                ..Default::default()
+                ..default()
             },
-            ..Default::default()
+            ..default()
         })
         .insert(Collider::Solid);
 }

@@ -18,10 +18,10 @@ pub fn spawn_game_over_text(
                 position_type: PositionType::Absolute,
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                ..Default::default()
+                ..default()
             },
             color: Color::rgb(0.15, 0.15, 0.15).into(),
-            ..Default::default()
+            ..default()
         })
         .with_children(|parent| {
             parent.spawn_bundle(TextBundle {
@@ -35,7 +35,7 @@ pub fn spawn_game_over_text(
                     },
                     Default::default(),
                 ),
-                ..Default::default()
+                ..default()
             });
         })
         .insert(GameOverText);

@@ -30,7 +30,7 @@ fn main() {
             title: "Trajectorena".to_string(),
             width: SCREEN_WIDTH,
             height: SCREEN_HEIGHT,
-            ..Default::default()
+            ..default()
         })
         .add_state(AppState::Menu)
         // <><--- MainMenu ---><>
