@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer>) {

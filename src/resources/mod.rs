@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 pub mod ui;
 
 pub use crate::resources::ui::menu_data::*;

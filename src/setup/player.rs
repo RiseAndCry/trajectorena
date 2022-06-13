@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =

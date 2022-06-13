@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]

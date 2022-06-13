@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
 

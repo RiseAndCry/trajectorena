@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub const ARENA_SIZE: (f32, f32, f32) = (SCREEN_WIDTH / 2.0, SCREEN_HEIGHT, 0.0);

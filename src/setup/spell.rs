@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 use crate::prelude::*;
 
 pub const SPELL_SIZE: (f32, f32) = (20.0, 20.0);

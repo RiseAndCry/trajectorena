@@ -1,5 +1,3 @@
-#![warn(clippy::pedantic)]
-
 pub mod health_text;
 pub mod game_over_text;
 

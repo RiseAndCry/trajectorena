@@ -1,4 +1,4 @@
-#![warn(clippy::pedantic)]
+#![warn(clippy::all)]
 
 mod setup;
 mod resources;
