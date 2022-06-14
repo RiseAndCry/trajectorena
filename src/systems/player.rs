@@ -4,7 +4,6 @@ use bevy::input::mouse::MouseButtonInput;
 pub const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
 
 pub fn player_movement_system(
-    time: Res<Time>,
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &mut Transform)>,
 ) {
@@ -25,8 +24,8 @@ pub fn player_movement_system(
         }
 
         let translation = &mut transform.translation;
-        translation.x += time.delta_seconds() * movement.x * player.speed;
-        translation.y += time.delta_seconds() * movement.y * player.speed;
+        translation.x += MOVEMENT_TIME_STEP * movement.x * player.speed;
+        translation.y += MOVEMENT_TIME_STEP * movement.y * player.speed;
 
         // bound the player within the walls
         let player_one_side_size = Vec2::from(PLAYER_SIZE).x / 2.0;

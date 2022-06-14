@@ -8,9 +8,11 @@ pub fn spell_collision_system(
         let spell_size = sprite.custom_size.expect("Sprite size must be set");
 
         for (_, collider, transform, sprite) in collider_query.iter() {
-            // collision is not detected if the object is moving too fast, so either it has to be
-            // slower, or one of the colliding objects needs to be bigger in size.
-            // https://github.com/bevyengine/bevy/issues/1240
+            // collision might not be detected if an object is moving too fast. Solutions:
+            // 1. reduce the object movement speed
+            // 2. increase the size of colliding object(s)
+            // 3. lower MOVEMENT_TIME_STEP - the smaller this timeStep is, the less distance
+            // the object will move, thus making it easier for collision to detect it.
             let collision = collide(
                 spell_transform.translation,
                 spell_size,

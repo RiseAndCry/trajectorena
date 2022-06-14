@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+const PLAYER_SPEED: f32 = 400.0;
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
     (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
 
@@ -14,5 +15,5 @@ pub fn spawn_player(commands: &mut Commands) {
             },
             ..default()
         })
-        .insert(Player::new());
+        .insert(Player::new(PLAYER_SPEED));
 }
