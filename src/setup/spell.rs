@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 pub const SPELL_SIZE: (f32, f32) = (20.0, 20.0);
 
-const SPELL_VELOCITY: f32 = 400.0;
+const SPELL_VELOCITY: f32 = 500.0;
 const SPELL_STARTING_POSITION_OFFSET: (f32, f32, f32) = (0.0, 20.0, 0.0);
 
 pub fn spawn_spell(commands: &mut Commands, player_transform: &Transform, direction: Vec3) {

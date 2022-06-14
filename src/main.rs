@@ -9,6 +9,7 @@ mod prelude {
     pub use bevy::{
         prelude::*,
         sprite::collide_aabb::{collide, Collision},
+        core::FixedTimestep,
     };
 
     pub use crate::setup::*;
@@ -19,6 +20,7 @@ mod prelude {
     // todo handle resizing, different resolutions
     pub const SCREEN_WIDTH: f32 = 1280.0;
     pub const SCREEN_HEIGHT: f32 = 720.0;
+    pub const MOVEMENT_TIME_STEP: f32 = 1.0 / 240.0;
 }
 
 use prelude::*;
@@ -42,12 +44,18 @@ fn main() {
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
                 .with_system(health_update_system)
+                .with_system(player_movement_system) // this might need to be moved to fixedTimeStep
+                .with_system(player_shooting_system)
+                .with_system(spell_despawn_system)
+                .with_system(state_update_system)
+        )
+        // movement and collision systems need to be handled on fixed time step so that collision
+        // is calculated correctly - https://github.com/bevyengine/bevy/issues/1240
+        .add_system_set(
+            SystemSet::on_update(AppState::InGame)
+                .with_run_criteria(FixedTimestep::step(MOVEMENT_TIME_STEP as f64))
                 .with_system(spell_movement_system)
                 .with_system(spell_collision_system)
-                .with_system(spell_despawn_system)
-                .with_system(player_movement_system)
-                .with_system(player_shooting_system)
-                .with_system(state_update_system)
         )
         .add_system_set(
             SystemSet::on_exit(AppState::InGame).with_system(despawn_system)
