@@ -5,7 +5,7 @@ pub const ARENA_WALL_THICKNESS: f32 = 5.0;
 pub const CASTLE_WALL_THICKNESS: f32 = 20.0;
 
 const CASTLE_WALL_LENGTH: f32 = ARENA_SIZE.0 / 4.0;
-const CASTLE_WALL_Y_TRANSLATION: f32 = ARENA_SIZE.1 / 3.0;
+pub const CASTLE_WALL_Y_TRANSLATION: f32 = ARENA_SIZE.1 / 3.0;
 
 pub fn spawn_arena_bounds(commands: &mut Commands) {
     let arena = Vec3::from(ARENA_SIZE);
@@ -21,7 +21,11 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
     // right
     commands
         .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(arena.x / 2.0, 0.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(
+                arena.x / 2.0 + ARENA_WALL_THICKNESS / 2.0,
+                0.0,
+                0.0
+            )),
             sprite: sprite.clone(),
             ..default()
         })
@@ -30,7 +34,11 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
     // left
     commands
         .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(-arena.x / 2.0, 0.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(
+                -arena.x / 2.0 - ARENA_WALL_THICKNESS / 2.0,
+                0.0,
+                0.0
+            )),
             sprite,
             ..default()
         })

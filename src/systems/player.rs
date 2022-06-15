@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
 
-pub const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
+pub const PLAYER_SIZE: (f32, f32) = (24.0, 24.0);
 
 pub fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
@@ -32,13 +32,13 @@ pub fn player_movement_system(
 
         translation.x = translation
             .x
-            .min(arena_size.x / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
-            .max(-arena_size.x / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
+            .min(arena_size.x / 2.0 - player_one_side_size)
+            .max(-arena_size.x / 2.0 + player_one_side_size);
 
         translation.y = translation
             .y
-            .min(arena_size.y / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
-            .max(-arena_size.y / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
+            .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS / 2.0 - player_one_side_size)
+            .max(-arena_size.y / 2.0 + CASTLE_WALL_THICKNESS / 2.0 + player_one_side_size);
     }
 }
 
