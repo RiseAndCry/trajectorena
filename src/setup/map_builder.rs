@@ -21,7 +21,11 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
     // right
     commands
         .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(arena.x / 2.0, 0.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(
+                arena.x / 2.0 + ARENA_WALL_THICKNESS / 2.0,
+                0.0,
+                0.0
+            )),
             sprite: sprite.clone(),
             ..default()
         })
@@ -30,7 +34,11 @@ pub fn spawn_arena_bounds(commands: &mut Commands) {
     // left
     commands
         .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::new(-arena.x / 2.0, 0.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(
+                -arena.x / 2.0 - ARENA_WALL_THICKNESS / 2.0,
+                0.0,
+                0.0
+            )),
             sprite,
             ..default()
         })
