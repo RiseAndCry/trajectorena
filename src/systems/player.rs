@@ -37,7 +37,7 @@ pub fn player_movement_system(
 
         translation.y = translation
             .y
-            .min(arena_size.y / 2.0 - CASTLE_WALL_THICKNESS / 2.0 - player_one_side_size)
+            .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS / 2.0 - player_one_side_size)
             .max(-arena_size.y / 2.0 + CASTLE_WALL_THICKNESS / 2.0 + player_one_side_size);
     }
 }
