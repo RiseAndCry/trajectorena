@@ -18,8 +18,19 @@ mod prelude {
     pub use crate::systems::*;
 
     // todo handle resizing, different resolutions
-    pub const SCREEN_WIDTH: f32 = 1280.0;
-    pub const SCREEN_HEIGHT: f32 = 720.0;
+    pub struct ScreenSize {
+        pub width: f32,
+        pub width_half: f32,
+        pub height: f32,
+        pub height_half: f32,
+    }
+    pub const SCREEN_SIZE: ScreenSize = ScreenSize {
+        width: 1280.0,
+        width_half: 640.0,
+        height: 720.0,
+        height_half: 360.0,
+    };
+
     pub const MOVEMENT_TIME_STEP: f32 = 1.0 / 240.0;
 }
 
@@ -30,8 +41,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .insert_resource(WindowDescriptor {
             title: "Trajectorena".to_string(),
-            width: SCREEN_WIDTH,
-            height: SCREEN_HEIGHT,
+            width: SCREEN_SIZE.width,
+            height: SCREEN_SIZE.height,
             ..default()
         })
         .add_state(AppState::Menu)

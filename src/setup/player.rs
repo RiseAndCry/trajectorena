@@ -2,7 +2,7 @@ use crate::prelude::*;
 
 const PLAYER_SPEED: f32 = 1200.0;
 const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
-    (0.0, -SCREEN_HEIGHT / 2.0 + ARENA_WALL_THICKNESS + 10.0, 0.0);
+    (0.0, -SCREEN_SIZE.height_half + ARENA_WALL_THICKNESS + 10.0, 0.0);
 
 pub fn spawn_player(commands: &mut Commands) {
     commands

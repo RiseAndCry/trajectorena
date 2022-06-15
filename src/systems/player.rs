@@ -1,14 +1,29 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
 
-pub const PLAYER_SIZE: (f32, f32) = (24.0, 24.0);
+pub struct PlayerSize {
+    pub width: f32,
+    pub width_half: f32,
+    pub height: f32,
+    pub height_half: f32,
+}
+pub const PLAYER_SIZE: PlayerSize = PlayerSize {
+    width: 24.0,
+    width_half: 12.0,
+    height: 24.0,
+    height_half: 12.0,
+};
+impl From<PlayerSize> for Vec2 {
+    fn from(_: PlayerSize) -> Self {
+        Vec2::new(PLAYER_SIZE.width, PLAYER_SIZE.height)
+    }
+}
 
 pub fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &mut Transform)>,
 ) {
     for (player, mut transform) in query.iter_mut() {
-        let arena_size = Vec3::from(ARENA_SIZE);
         let mut movement = Vec2::new(0.0, 0.0);
         if keyboard_input.pressed(KeyCode::A) {
             movement.x -= 1.0;
@@ -28,17 +43,15 @@ pub fn player_movement_system(
         translation.y += MOVEMENT_TIME_STEP * movement.y * player.speed;
 
         // bound the player within the walls
-        let player_one_side_size = Vec2::from(PLAYER_SIZE).x / 2.0;
-
         translation.x = translation
             .x
-            .min(arena_size.x / 2.0 - player_one_side_size)
-            .max(-arena_size.x / 2.0 + player_one_side_size);
+            .min(ARENA_SIZE.width_half - PLAYER_SIZE.width_half)
+            .max(-ARENA_SIZE.width_half + PLAYER_SIZE.width_half);
 
         translation.y = translation
             .y
-            .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS / 2.0 - player_one_side_size)
-            .max(-arena_size.y / 2.0 + CASTLE_WALL_THICKNESS / 2.0 + player_one_side_size);
+            .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS_HALF - PLAYER_SIZE.width_half)
+            .max(-ARENA_SIZE.height_half + CASTLE_WALL_THICKNESS_HALF + PLAYER_SIZE.width_half);
     }
 }
 
@@ -61,7 +74,7 @@ pub fn player_shooting_system(
     for ev in evr_cursor.iter() {
         // cursor to world coordinates, since bevy does not yet have built-in function for this
         // (https://bevy-cheatbook.github.io/cookbook/cursor2world.html)
-        let cursor_world_pos = ev.position - Vec2::new(SCREEN_WIDTH, SCREEN_HEIGHT) / 2.0;
+        let cursor_world_pos = ev.position - Vec2::new(SCREEN_SIZE.width, SCREEN_SIZE.height) / 2.0;
         let cursor_world_pos: Vec3 = Vec3::new(cursor_world_pos.x, cursor_world_pos.y, 0.0);
         direction = cursor_world_pos - player_transform.translation;
     }

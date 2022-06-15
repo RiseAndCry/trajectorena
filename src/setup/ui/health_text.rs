@@ -7,7 +7,7 @@ pub fn spawn_health_text(commands: &mut Commands, asset_server: &Res<AssetServer
                 position_type: PositionType::Absolute,
                 position: Rect {
                     top: Val::Px(0.0),
-                    left: Val::Px(SCREEN_WIDTH / 2.0 + ARENA_SIZE.0 / 2.0 + 10.0),
+                    left: Val::Px(SCREEN_SIZE.width_half + ARENA_SIZE.width_half + 10.0),
                     ..default()
                 },
                 ..default()
