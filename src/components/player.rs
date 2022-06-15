@@ -1,14 +1,14 @@
 use crate::prelude::*;
 
 #[derive(Component)]
-pub struct Player {
-    pub speed: f32,
+pub enum Player {
+    One,
 }
 
-impl Player {
-    pub fn new(speed: f32) -> Self {
-        Player {
-            speed,
-        }
-    }
+#[derive(Bundle)]
+pub struct PlayerBundle {
+    pub player: Player,
+    pub movement: Movement,
+    #[bundle]
+    pub sprite: SpriteBundle,
 }

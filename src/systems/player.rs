@@ -21,35 +21,25 @@ impl From<PlayerSize> for Vec2 {
 
 pub fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
-    mut query: Query<(&Player, &mut Transform)>,
+    mut query: Query<(&Player, &Movement, &mut Transform)>,
 ) {
-    for (player, mut transform) in query.iter_mut() {
-        let mut movement = Vec2::new(0.0, 0.0);
-        if keyboard_input.pressed(KeyCode::A) {
-            movement.x -= 1.0;
-        }
-        if keyboard_input.pressed(KeyCode::D) {
-            movement.x += 1.0;
-        }
-        if keyboard_input.pressed(KeyCode::W) {
-            movement.y += 1.0;
-        }
-        if keyboard_input.pressed(KeyCode::S) {
-            movement.y -= 1.0;
-        }
-
+    for (_, movement, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
-        translation.x += MOVEMENT_TIME_STEP * movement.x * player.speed;
-        translation.y += MOVEMENT_TIME_STEP * movement.y * player.speed;
+        for key in keyboard_input.get_pressed() {
+            match key {
+                KeyCode::A => translation.x -= movement.velocity.x * MOVEMENT_TIME_STEP,
+                KeyCode::D => translation.x += movement.velocity.x * MOVEMENT_TIME_STEP,
+                KeyCode::W => translation.y += movement.velocity.y * MOVEMENT_TIME_STEP,
+                KeyCode::S => translation.y -= movement.velocity.y * MOVEMENT_TIME_STEP,
+                _ => (),
+            }
+        }
 
         // bound the player within the walls
-        translation.x = translation
-            .x
+        translation.x = translation.x
             .min(ARENA_SIZE.width_half - PLAYER_SIZE.width_half)
             .max(-ARENA_SIZE.width_half + PLAYER_SIZE.width_half);
-
-        translation.y = translation
-            .y
+        translation.y = translation.y
             .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS_HALF - PLAYER_SIZE.width_half)
             .max(-ARENA_SIZE.height_half + CASTLE_WALL_THICKNESS_HALF + PLAYER_SIZE.width_half);
     }

@@ -111,7 +111,7 @@ fn in_game_setup(
     spawn_arena_bounds(&mut commands);
     spawn_castles(&mut commands);
     spawn_castle_walls(&mut commands);
-    spawn_player(&mut commands);
+    spawn_player_1(&mut commands);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());
