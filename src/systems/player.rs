@@ -32,13 +32,13 @@ pub fn player_movement_system(
 
         translation.x = translation
             .x
-            .min(arena_size.x / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
-            .max(-arena_size.x / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
+            .min(arena_size.x / 2.0 - player_one_side_size)
+            .max(-arena_size.x / 2.0 + player_one_side_size);
 
         translation.y = translation
             .y
-            .min(arena_size.y / 2.0 - ARENA_WALL_THICKNESS - player_one_side_size)
-            .max(-arena_size.y / 2.0 + ARENA_WALL_THICKNESS + player_one_side_size);
+            .min(arena_size.y / 2.0 - CASTLE_WALL_THICKNESS / 2.0 - player_one_side_size)
+            .max(-arena_size.y / 2.0 + CASTLE_WALL_THICKNESS / 2.0 + player_one_side_size);
     }
 }
 
