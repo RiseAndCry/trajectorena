@@ -4,7 +4,19 @@ use crate::prelude::*;
 pub const BUTTON_COLOR_DEFAULT: Color = Color::rgb(0.15, 0.15, 0.15);
 pub const BUTTON_COLOR_HOVERED: Color = Color::rgb(0.25, 0.25, 0.25);
 
-const BUTTON_SIZE: (f32, f32) = (150.0, 65.0);
+pub struct ButtonSize {
+    pub width: f32,
+    pub width_half: f32,
+    pub height: f32,
+    pub height_half: f32,
+}
+
+pub const BUTTON_SIZE: ButtonSize = ButtonSize {
+    width: 150.0,
+    width_half: 75.0,
+    height: 65.0,
+    height_half: 65.0 / 2.0,
+};
 
 pub fn spawn_play_button(
     commands: &mut Commands,
@@ -57,10 +69,10 @@ fn get_button_bundle() -> ButtonBundle {
     ButtonBundle {
         // todo try to use flex instead of this manual calculation (NodeBundle as in GameOver text)
         style: Style {
-            size: Size::new(Val::Px(BUTTON_SIZE.0), Val::Px(BUTTON_SIZE.1)),
+            size: Size::new(Val::Px(BUTTON_SIZE.width), Val::Px(BUTTON_SIZE.height)),
             // center button
             position: Rect {
-                left: Val::Px(SCREEN_WIDTH / 2.0 - BUTTON_SIZE.0 / 2.0),
+                left: Val::Px(SCREEN_SIZE.width_half - BUTTON_SIZE.width_half),
                 right: Val::Auto,
                 top: Val::Percent(50.0),
                 bottom: Val::Auto
