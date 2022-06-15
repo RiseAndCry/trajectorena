@@ -1,7 +1,7 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
 
-pub const PLAYER_SIZE: (f32, f32) = (16.0, 16.0);
+pub const PLAYER_SIZE: (f32, f32) = (24.0, 24.0);
 
 pub fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
