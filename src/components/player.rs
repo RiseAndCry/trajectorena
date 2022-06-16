@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-#[derive(Component)]
+#[derive(Component, PartialEq)]
 pub enum Player {
     One,
     Two,

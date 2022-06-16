@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
+use crate::Player;
 
 pub struct PlayerSize {
     pub width: f32,
@@ -19,29 +20,79 @@ impl From<PlayerSize> for Vec2 {
     }
 }
 
+// maybe store controls as resources ?
+struct PlayerControls {
+    up: KeyCode,
+    down: KeyCode,
+    left: KeyCode,
+    right: KeyCode,
+}
+const P1_CONTROLS: PlayerControls = PlayerControls {
+    up: KeyCode::W,
+    down: KeyCode::S,
+    left: KeyCode::A,
+    right: KeyCode::D,
+};
+const P2_CONTROLS: PlayerControls = PlayerControls {
+    up: KeyCode::Up,
+    down: KeyCode::Down,
+    left: KeyCode::Left,
+    right: KeyCode::Right,
+};
+
 pub fn player_movement_system(
     keyboard_input: Res<Input<KeyCode>>,
     mut query: Query<(&Player, &Movement, &mut Transform)>,
 ) {
-    for (_, movement, mut transform) in query.iter_mut() {
+    for (player, movement, mut transform) in query.iter_mut() {
         let translation = &mut transform.translation;
-        for key in keyboard_input.get_pressed() {
-            match key {
-                KeyCode::A => translation.x -= movement.velocity.x * MOVEMENT_TIME_STEP,
-                KeyCode::D => translation.x += movement.velocity.x * MOVEMENT_TIME_STEP,
-                KeyCode::W => translation.y += movement.velocity.y * MOVEMENT_TIME_STEP,
-                KeyCode::S => translation.y -= movement.velocity.y * MOVEMENT_TIME_STEP,
-                _ => (),
-            }
+        let mut controls = P1_CONTROLS;
+        if *player == Player::Two {
+            controls = P2_CONTROLS
         }
 
-        // bound the player within the walls
-        translation.x = translation.x
-            .min(ARENA_SIZE.width_half - PLAYER_SIZE.width_half)
-            .max(-ARENA_SIZE.width_half + PLAYER_SIZE.width_half);
-        translation.y = translation.y
-            .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS_HALF - PLAYER_SIZE.width_half)
-            .max(-ARENA_SIZE.height_half + CASTLE_WALL_THICKNESS_HALF + PLAYER_SIZE.width_half);
+        handle_player_movement(&keyboard_input, movement, translation, &controls);
+        restrict_player_movement(player, translation);
+    }
+}
+
+fn handle_player_movement(
+    keyboard_input: &Res<Input<KeyCode>>,
+    movement: &Movement,
+    translation: &mut Vec3,
+    controls: &PlayerControls
+) {
+    for key in keyboard_input.get_pressed() {
+        match key {
+            k if k == &controls.left => translation.x -= movement.velocity.x * MOVEMENT_TIME_STEP,
+            k if k == &controls.right => translation.x += movement.velocity.x * MOVEMENT_TIME_STEP,
+            k if k == &controls.up => translation.y += movement.velocity.y * MOVEMENT_TIME_STEP,
+            k if k == &controls.down => translation.y -= movement.velocity.y * MOVEMENT_TIME_STEP,
+            _ => (),
+        }
+    }
+}
+
+fn restrict_player_movement(player: &Player, translation: &mut Vec3) {
+    // bound the player within the horizontal arena bounds
+    translation.x = translation.x
+        .min(ARENA_SIZE.width_half - PLAYER_SIZE.width_half)
+        .max(-ARENA_SIZE.width_half + PLAYER_SIZE.width_half);
+
+    // bound the player within the vertical arena bounds
+    match player {
+        Player::One => {
+            // bottom castle
+            translation.y = translation.y
+                .min(-CASTLE_WALL_Y_TRANSLATION - ARENA_WALL_THICKNESS_HALF - PLAYER_SIZE.width_half)
+                .max(-ARENA_SIZE.height_half + CASTLE_WALL_THICKNESS_HALF + PLAYER_SIZE.width_half);
+        },
+        Player::Two => {
+            // top castle
+            translation.y = translation.y
+                .min(ARENA_SIZE.height_half - CASTLE_WALL_THICKNESS_HALF - PLAYER_SIZE.width_half)
+                .max(CASTLE_WALL_Y_TRANSLATION + ARENA_WALL_THICKNESS_HALF + PLAYER_SIZE.width_half);
+        },
     }
 }
 
