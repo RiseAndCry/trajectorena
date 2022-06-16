@@ -53,14 +53,35 @@ pub fn player_shooting_system(
     mut spell_cooldown: ResMut<SpellCooldown>,
     player_query: Query<(&Player, &Transform)>,
 ) {
+    for (player, transform) in player_query.iter() {
+        match player {
+            Player::One => handle_player_1_shooting(
+                &time,
+                &mut commands,
+                &mut evr_mouse_btn,
+                &mut evr_cursor,
+                &mut spell_cooldown,
+                transform
+            ),
+            Player::Two => (), // todo
+        }
+    }
+}
+
+fn handle_player_1_shooting(
+    time: &Res<Time>,
+    commands: &mut Commands,
+    evr_mouse_btn: &mut EventReader<MouseButtonInput>,
+    evr_cursor: &mut EventReader<CursorMoved>,
+    spell_cooldown: &mut ResMut<SpellCooldown>,
+    player_transform: &Transform
+) {
     spell_cooldown.timer.tick(time.delta());
-
-    let mut direction = Vec3::ZERO;
-    let (_, player_transform) = player_query.single();
-
     if !spell_cooldown.timer.finished() {
         return;
     }
+
+    let mut direction = Vec3::ZERO;
     for ev in evr_cursor.iter() {
         // cursor to world coordinates, since bevy does not yet have built-in function for this
         // (https://bevy-cheatbook.github.io/cookbook/cursor2world.html)
@@ -71,7 +92,7 @@ pub fn player_shooting_system(
 
     for ev in evr_mouse_btn.iter() {
         if !ev.state.is_pressed() && ev.button == MouseButton::Left {
-            spawn_spell(&mut commands, player_transform, direction);
+            spawn_spell(commands, player_transform, direction);
             spell_cooldown.timer.reset();
         }
     }

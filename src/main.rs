@@ -112,6 +112,7 @@ fn in_game_setup(
     spawn_castles(&mut commands);
     spawn_castle_walls(&mut commands);
     spawn_player_1(&mut commands);
+    spawn_player_2(&mut commands);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());

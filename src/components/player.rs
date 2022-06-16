@@ -3,6 +3,7 @@ use crate::prelude::*;
 #[derive(Component)]
 pub enum Player {
     One,
+    Two,
 }
 
 #[derive(Bundle)]
