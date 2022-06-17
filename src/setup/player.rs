@@ -1,19 +1,23 @@
 use crate::prelude::*;
 
-const PLAYER_SPEED: f32 = 1200.0;
-const PLAYER_STARTING_TRANSLATION: (f32, f32, f32) =
-    (0.0, -SCREEN_SIZE.height_half + ARENA_WALL_THICKNESS + 10.0, 0.0);
+pub fn spawn_player_1(commands: &mut Commands) {
+    let mut position = Vec3::ZERO;
+    position.y = -ARENA_SIZE.height_half + CASTLE_WALL_THICKNESS_HALF + PLAYER_SIZE.height_half;
 
-pub fn spawn_player(commands: &mut Commands) {
-    commands
-        .spawn_bundle(SpriteBundle {
-            transform: Transform::from_translation(Vec3::from(PLAYER_STARTING_TRANSLATION)),
-            sprite: Sprite {
-                custom_size: Some(Vec2::from(PLAYER_SIZE)),
-                color: Color::BLUE,
-                ..default()
-            },
-            ..default()
-        })
-        .insert(Player::new(PLAYER_SPEED));
+    commands.spawn_bundle(PlayerBundle::new(
+        Player::One,
+        position,
+        Color::BLUE
+    ));
+}
+
+pub fn spawn_player_2(commands: &mut Commands) {
+    let mut position = Vec3::ZERO;
+    position.y = ARENA_SIZE.height_half - CASTLE_WALL_THICKNESS_HALF - PLAYER_SIZE.height_half;
+
+    commands.spawn_bundle(PlayerBundle::new(
+        Player::Two,
+        position,
+        Color::RED
+    ));
 }

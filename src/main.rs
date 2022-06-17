@@ -4,6 +4,7 @@ mod setup;
 mod resources;
 mod components;
 mod systems;
+mod events;
 
 mod prelude {
     pub use bevy::{
@@ -16,6 +17,7 @@ mod prelude {
     pub use crate::resources::*;
     pub use crate::components::*;
     pub use crate::systems::*;
+    pub use crate::events::*;
 
     // todo handle resizing, different resolutions
     pub struct ScreenSize {
@@ -46,6 +48,7 @@ fn main() {
             ..default()
         })
         .add_state(AppState::Menu)
+        .add_event::<SpellOutOfBounds>()
         // <><--- MainMenu ---><>
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup))
         .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system))
@@ -54,11 +57,11 @@ fn main() {
         .add_system_set(SystemSet::on_enter(AppState::InGame).with_system(in_game_setup))
         .add_system_set(
             SystemSet::on_update(AppState::InGame)
-                .with_system(health_update_system)
                 .with_system(player_movement_system) // this might need to be moved to fixedTimeStep
                 .with_system(player_shooting_system)
                 .with_system(spell_despawn_system)
                 .with_system(state_update_system)
+                .with_system(reduce_player_health_when_spell_goes_out_of_bounds)
         )
         // movement and collision systems need to be handled on fixed time step so that collision
         // is calculated correctly - https://github.com/bevyengine/bevy/issues/1240
@@ -104,14 +107,15 @@ fn in_game_setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>
 ) {
-    commands.insert_resource(CastleHealth::new());
     commands.insert_resource(SpellCooldown::new());
 
-    spawn_health_text(&mut commands, &asset_server);
     spawn_arena_bounds(&mut commands);
     spawn_castles(&mut commands);
     spawn_castle_walls(&mut commands);
-    spawn_player(&mut commands);
+    spawn_player_1(&mut commands);
+    spawn_player_2(&mut commands);
+    spawn_player_1_health_text(&mut commands, &asset_server);
+    spawn_player_2_health_text(&mut commands, &asset_server);
 
     commands.spawn_bundle(OrthographicCameraBundle::new_2d());
     commands.spawn_bundle(UiCameraBundle::default());

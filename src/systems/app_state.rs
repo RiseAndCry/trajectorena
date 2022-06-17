@@ -2,9 +2,12 @@ use crate::prelude::*;
 
 pub fn state_update_system(
     mut app_state: ResMut<State<AppState>>,
-    castle_health: ResMut<CastleHealth>
+    query: Query<&Health>,
 ) {
-    if castle_health.health <= 0 && *app_state.current() != AppState::GameOver {
-        app_state.set(AppState::GameOver).unwrap();
+    for health in query.iter() {
+        // todo announce which player won
+        if health.value == 0 && *app_state.current() != AppState::GameOver {
+            app_state.set(AppState::GameOver).unwrap();
+        }
     }
 }

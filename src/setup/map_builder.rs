@@ -12,7 +12,7 @@ pub const ARENA_SIZE: ArenaSize = ArenaSize {
     width: SCREEN_SIZE.width_half,
     width_half: SCREEN_SIZE.width_half / 2.0,
     height: SCREEN_SIZE.height,
-    height_half: SCREEN_SIZE.height / 2.0,
+    height_half: SCREEN_SIZE.height_half,
     depth: 0.0,
 };
 
