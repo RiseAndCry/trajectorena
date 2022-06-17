@@ -1,7 +1,6 @@
 pub mod ui;
 
 pub use crate::systems::ui::main_menu::*;
-pub use crate::systems::ui::health_text::*;
 
 mod collision;
 mod player;

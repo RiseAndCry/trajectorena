@@ -29,12 +29,32 @@ pub fn spell_despawn_system(
     }
 }
 
-pub fn reduce_player_health(
+pub fn reduce_player_health_when_spell_goes_out_of_bounds(
     mut spell_out_of_bounds: EventReader<SpellOutOfBounds>,
-    mut castle_health: ResMut<CastleHealth>,
+    mut health_query: Query<(&Player, &mut Health)>,
+    mut health_text_query: Query<(&HealthText, &mut Text)>,
 ) {
-    for _ in spell_out_of_bounds.iter() {
-        castle_health.health -= 1;
+    for ev in spell_out_of_bounds.iter() {
+        let player_to_reduce_health_for = match ev {
+            SpellOutOfBounds::Bottom => Player::One,
+            SpellOutOfBounds::Top => Player::Two,
+        };
+
+        // reduce health
+        let mut final_health = 0;
+        for (player, mut health) in health_query.iter_mut() {
+            if *player == player_to_reduce_health_for {
+                health.value -= 1;
+                final_health = health.value;
+            }
+        }
+
+        // change health text value
+        for (health_text, mut text) in health_text_query.iter_mut() {
+            if health_text.player == player_to_reduce_health_for {
+                text.sections[1].value = final_health.to_string();
+            }
+        }
     }
 }
 

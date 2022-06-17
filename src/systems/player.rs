@@ -1,24 +1,5 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
-use crate::Player;
-
-pub struct PlayerSize {
-    pub width: f32,
-    pub width_half: f32,
-    pub height: f32,
-    pub height_half: f32,
-}
-pub const PLAYER_SIZE: PlayerSize = PlayerSize {
-    width: 24.0,
-    width_half: 12.0,
-    height: 24.0,
-    height_half: 12.0,
-};
-impl From<PlayerSize> for Vec2 {
-    fn from(_: PlayerSize) -> Self {
-        Vec2::new(PLAYER_SIZE.width, PLAYER_SIZE.height)
-    }
-}
 
 // maybe store controls as resources ?
 struct PlayerControls {

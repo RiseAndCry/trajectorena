@@ -9,7 +9,9 @@ mod spell;
 mod collision;
 mod despawn;
 mod app_state;
+mod health;
 
+pub use crate::components::health::*;
 pub use crate::components::movement::*;
 pub use crate::components::player::*;
 pub use crate::components::spell::*;
