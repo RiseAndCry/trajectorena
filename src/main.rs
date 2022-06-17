@@ -4,6 +4,7 @@ mod setup;
 mod resources;
 mod components;
 mod systems;
+mod events;
 
 mod prelude {
     pub use bevy::{
@@ -16,6 +17,7 @@ mod prelude {
     pub use crate::resources::*;
     pub use crate::components::*;
     pub use crate::systems::*;
+    pub use crate::events::*;
 
     // todo handle resizing, different resolutions
     pub struct ScreenSize {
@@ -46,6 +48,7 @@ fn main() {
             ..default()
         })
         .add_state(AppState::Menu)
+        .add_event::<SpellOutOfBounds>()
         // <><--- MainMenu ---><>
         .add_system_set(SystemSet::on_enter(AppState::Menu).with_system(main_menu_setup))
         .add_system_set(SystemSet::on_update(AppState::Menu).with_system(main_menu_system))
@@ -59,6 +62,7 @@ fn main() {
                 .with_system(player_shooting_system)
                 .with_system(spell_despawn_system)
                 .with_system(state_update_system)
+                .with_system(reduce_player_health)
         )
         // movement and collision systems need to be handled on fixed time step so that collision
         // is calculated correctly - https://github.com/bevyengine/bevy/issues/1240
