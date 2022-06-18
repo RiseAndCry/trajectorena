@@ -4,7 +4,8 @@ A small, fast-paced 2D game where wizards try to take each other out
 by slinging various spells and outsmarting their opponents
 
 ### Setup
-`cargo run` 
+1. Install rust - https://www.rust-lang.org/tools/install
+2. `cargo run` 
 
 ### Gameplay instructions
 
