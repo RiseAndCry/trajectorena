@@ -124,7 +124,7 @@ fn handle_player_1_shooting(
 
     for ev in evr_mouse_btn.iter() {
         if !ev.state.is_pressed() && ev.button == MouseButton::Left {
-            spawn_spell(commands, player_transform, direction);
+            spawn_spell(commands, player_transform, direction, Player::One);
             spell_cooldown.timer.reset();
         }
     }
