@@ -59,6 +59,7 @@ fn main() {
             SystemSet::on_update(AppState::InGame)
                 .with_system(player_movement_system) // this might need to be moved to fixedTimeStep
                 .with_system(player_shooting_system)
+                .with_system(spell_holding_system)
                 .with_system(spell_despawn_system)
                 .with_system(state_update_system)
                 .with_system(reduce_player_health_when_spell_goes_out_of_bounds)
