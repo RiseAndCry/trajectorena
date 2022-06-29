@@ -132,44 +132,38 @@ fn handle_player_1_shooting(
     }
 }
 
+// RMB press holds the selected spell and release will shoot it in a new direction
 // todo update readme
-// todo if RMB is held, it should hold the spell once it comes into cursor's vicinity
 pub fn spell_holding_system(
-    mut evr_mouse_btn: EventReader<MouseButtonInput>,
+    mouse_button_input: Res<Input<MouseButton>>,
     mut evr_cursor: EventReader<CursorMoved>,
     mut spells_query: Query<(&mut Spell, &Sprite, &Transform)>,
 ) {
-    // RMB press holds the selected spell and release will shoot it in a new direction
-    for ev in evr_mouse_btn.iter() {
-        if ev.button != MouseButton::Right {
-            continue
+    // check if collision happens between spell and cursor vicinity
+    if mouse_button_input.pressed(MouseButton::Right) {
+        // todo use a radius
+        // todo detect closest instead of the first occurrence
+        for cursor in evr_cursor.iter() {
+            let cursor_world_pos = cursor.position - Vec2::new(SCREEN_SIZE.width_half, SCREEN_SIZE.height_half);
+            for (mut spell, sprite, transform) in spells_query.iter_mut() {
+                if collide(
+                    Vec3::from((cursor_world_pos, 0.0)),
+                    Vec2::from(CURSOR_VICINITY_FOR_SPELL_DETECTION),
+                    transform.translation,
+                    sprite.custom_size.expect("Sprite size must be set"),
+                ).is_some() {
+                    spell.is_on_hold = true;
+                };
+            }
         }
-        match ev.state.is_pressed() {
-            true => {
-                // for now just check if collision happens between spell and a cursor vicinity
-                // todo use a radius
-                // todo detect closest instead of the first occurrence
-                for cursor in evr_cursor.iter() {
-                    let cursor_world_pos = cursor.position - Vec2::new(SCREEN_SIZE.width_half, SCREEN_SIZE.height_half);
-                    for (mut spell, sprite, transform) in spells_query.iter_mut() {
-                        if collide(
-                            Vec3::from((cursor_world_pos, 0.0)),
-                            Vec2::from(CURSOR_VICINITY_FOR_SPELL_DETECTION),
-                            transform.translation,
-                            sprite.custom_size.expect("Sprite size must be set"),
-                        ).is_some() {
-                            spell.is_on_hold = true;
-                        };
-                    }
-                }
-            },
-            false => { // release the spell
-                // todo change trajectory
-                for (mut spell, _, _) in spells_query.iter_mut() {
-                    if spell.is_on_hold {
-                        spell.is_on_hold = false;
-                    }
-                }
+    }
+
+    // release the spell
+    if mouse_button_input.just_released(MouseButton::Right) {
+        // todo change trajectory
+        for (mut spell, _, _) in spells_query.iter_mut() {
+            if spell.is_on_hold {
+                spell.is_on_hold = false;
             }
         }
     }
