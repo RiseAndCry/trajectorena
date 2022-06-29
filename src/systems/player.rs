@@ -133,7 +133,6 @@ fn handle_player_1_shooting(
 }
 
 // RMB press holds the selected spell and release will shoot it in a new direction
-// todo update readme
 pub fn spell_holding_system(
     mouse_button_input: Res<Input<MouseButton>>,
     mut evr_cursor: EventReader<CursorMoved>,
