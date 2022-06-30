@@ -1,6 +1,8 @@
 use crate::prelude::*;
 use bevy::input::mouse::MouseButtonInput;
 
+const CURSOR_VICINITY_FOR_SPELL_DETECTION: (f32, f32) = (100.0, 100.0);
+
 // maybe store controls as resources ?
 struct PlayerControls {
     up: KeyCode,
@@ -124,8 +126,44 @@ fn handle_player_1_shooting(
 
     for ev in evr_mouse_btn.iter() {
         if !ev.state.is_pressed() && ev.button == MouseButton::Left {
-            spawn_spell(commands, player_transform, direction);
+            spawn_spell(commands, player_transform, direction, Player::One);
             spell_cooldown.timer.reset();
+        }
+    }
+}
+
+// RMB press holds the selected spell and release will shoot it in a new direction
+pub fn spell_holding_system(
+    mouse_button_input: Res<Input<MouseButton>>,
+    mut evr_cursor: EventReader<CursorMoved>,
+    mut spells_query: Query<(&mut Spell, &Sprite, &Transform)>,
+) {
+    // check if collision happens between spell and cursor vicinity
+    if mouse_button_input.pressed(MouseButton::Right) {
+        // todo use a radius
+        // todo detect closest instead of the first occurrence
+        for cursor in evr_cursor.iter() {
+            let cursor_world_pos = cursor.position - Vec2::new(SCREEN_SIZE.width_half, SCREEN_SIZE.height_half);
+            for (mut spell, sprite, transform) in spells_query.iter_mut() {
+                if collide(
+                    Vec3::from((cursor_world_pos, 0.0)),
+                    Vec2::from(CURSOR_VICINITY_FOR_SPELL_DETECTION),
+                    transform.translation,
+                    sprite.custom_size.expect("Sprite size must be set"),
+                ).is_some() {
+                    spell.is_on_hold = true;
+                };
+            }
+        }
+    }
+
+    // release the spell
+    if mouse_button_input.just_released(MouseButton::Right) {
+        // todo change trajectory
+        for (mut spell, _, _) in spells_query.iter_mut() {
+            if spell.is_on_hold {
+                spell.is_on_hold = false;
+            }
         }
     }
 }

@@ -3,7 +3,10 @@ use crate::prelude::*;
 pub fn spell_movement_system(
     mut spell_query: Query<(&Spell, &Movement, &mut Transform)>
 ) {
-    for (_, movement, mut transform) in spell_query.iter_mut() {
+    for (spell, movement, mut transform) in spell_query.iter_mut() {
+        if spell.is_on_hold {
+            continue;
+        }
         transform.translation += movement.velocity * MOVEMENT_TIME_STEP;
     }
 }

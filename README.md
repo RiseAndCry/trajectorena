@@ -11,7 +11,10 @@ by slinging various spells and outsmarting their opponents
 
 <i>note: Players can only move inside their castles.</i>
 #### Player 1
-use `W A S D` keys to move and left mouse button to shoot
+- use `W A S D` keys to move
+- left mouse button to shoot.
+- Pressing and holding the right mouse button in the vicinity of spell will stop it,
+releasing the button will resume spell movement. 
 
 #### Player 2
 <i>note: Until multiplayer / AI is implemented this player can only move.</i>
@@ -24,6 +27,7 @@ use `Up, Left, Down, Right` keys to move
 - [x] Basic spell shooting (cooldown, bouncing against walls)
 - [x] Player health tracking and game over state
 - [x] UI (main menu and game over screen)
+- [x] Spell holding
 - [ ] AI for single player
 - [ ] Different kinds of spells
 - [ ] Mana system
